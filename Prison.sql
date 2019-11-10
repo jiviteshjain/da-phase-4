@@ -168,7 +168,10 @@ CREATE TABLE `Jobs` (
   `job_name` varchar(255) NOT NULL,
   `working_hours_begin` time DEFAULT NULL,
   `working_hours_end` time DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `supervisor_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `supervisor_id` (`supervisor_id`),
+  CONSTRAINT `Jobs_ibfk_1` FOREIGN KEY (`supervisor_id`) REFERENCES `Prison_Staff` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -303,4 +306,4 @@ CREATE TABLE `Visits` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-10 23:01:21
+-- Dump completed on 2019-11-11  0:16:42

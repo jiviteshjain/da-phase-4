@@ -103,6 +103,5 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# venv
-env
-venv
+# vscode
+.vscode/
