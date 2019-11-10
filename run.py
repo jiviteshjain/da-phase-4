@@ -2,6 +2,65 @@ import subprocess as sp
 import pymysql
 import pymysql.cursors
 
+tables = ["Prisoners", "Jobs", "Staff", "Offences", "Appeals", "Emergency Contacts", "Visitors", "Visits"]
+
+def add_display():
+
+    print("Add to the table:")
+    i = 0
+    
+    while i < len(tables):
+        i+=1       
+        print(str(i) + ". " + tables[i])
+    
+    ch = int(input("Enter choice> "))
+
+
+
+def update_display():
+    print("Update the table:")
+    i = 0
+    
+    while i < len(tables):
+        i+=1       
+        print(str(i) + ". " + tables[i])
+    
+    ch = int(input("Enter choice> "))
+
+def delete_display():
+    print("Delete from the table:")
+    i = 0
+    while i < len(tables):
+        i+=1       
+        print(str(i) + ". " + tables[i])
+    
+    ch = int(input("Enter choice> "))
+
+def view_display():
+    print("View the table:")
+    i = 0
+    
+    while i < len(tables):
+        i+=1       
+        print(str(i) + ". " + tables[i])
+    
+    ch = int(input("Enter choice> "))
+
+    return
+
+def dispatch(ch):
+
+    if(ch == 1): 
+        add_display()
+    elif(ch == 2):
+        update_display()
+    elif(ch == 3):
+        delete_display()
+    elif(ch == 4):
+        view_display()
+    else:
+        print("Error: Invalid Option")
+
 while(1):
     tmp = sp.call('clear',shell=True)
     username = input("Username: ")
@@ -26,13 +85,14 @@ while(1):
             while(1):
                 tmp = sp.call('clear',shell=True)
                 print("1. Add")
-                print("2. Create")
-                print("3. Promote an employee")
-                print("4. Employee Statistics")
+                print("2. Update")
+                print("3. Delete")
+                print("4. View")
                 print("5. Logout")
                 ch = int(input("Enter choice> "))
                 tmp = sp.call('clear',shell=True)
-                if ch==5:
+                printf("yee")
+                if ch == 5:
                     break
                 else:
                     dispatch(ch)
