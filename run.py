@@ -2,7 +2,7 @@ import subprocess as sp
 import pymysql
 import pymysql.cursors
 
-tables = ["Prisoners", "Jobs", "Staff", "Offences", "Appeals", "Emergency Contacts", "Visitors", "Visits"]
+tables = ["Prisoners", "Jobs", "Staff", "Offences", "Appeals", "Visits", "Go back"]
 
 def add_display():
 
@@ -11,11 +11,30 @@ def add_display():
     
     while i < len(tables):
         i+=1       
-        print(str(i) + ". " + tables[i])
+        print(str(i) + ". " + tables[i-1])
     
     ch = int(input("Enter choice> "))
+    if(ch == 1):
+        add_prisoner(cur, con)
+    
+    elif(ch == 2):
+        add_job(cur, con)
+    
+    elif(ch==3):
+        add_staff(cur, con)
+    
+    elif(ch==4):
+        add_offence(cur, con)
+    
+    elif(ch == 5):
+        add_appeal(cur, con)
 
+    elif(ch == 6):
+        add_visit(cur, con)
 
+    elif(ch!=7):
+        print("Enter valid value!")
+        
 
 def update_display():
     print("Update the table:")
@@ -26,6 +45,40 @@ def update_display():
         print(str(i) + ". " + tables[i])
     
     ch = int(input("Enter choice> "))
+    if(ch == 1):
+        update_prisoner(cur, con)
+    
+    elif(ch == 2):
+        update_job(cur, con)
+    
+    elif(ch==3):
+        update_prisoner(cur, con)
+    
+    elif(ch == 2):
+        update_job(cur, con)
+    
+    elif(ch==3):
+        update_staff(cur, con)
+    
+    elif(ch==4):
+        update_offence(cur, con)
+    
+    elif(ch == 5):
+        update_appeal(cur, con)
+        update_staff(cur, con)
+    
+    elif(ch==4):
+        update_offence(cur, con)
+    
+    elif(ch == 5):
+        update_appeal(cur, con)
+    
+    elif(ch == 6):
+        update_visit(cur, con)
+
+    elif(ch!=7):
+        print("Enter valid value!")
+        
 
 def delete_display():
     print("Delete from the table:")
@@ -35,6 +88,27 @@ def delete_display():
         print(str(i) + ". " + tables[i])
     
     ch = int(input("Enter choice> "))
+
+    if(ch == 1):
+        delete_prisoner(cur, con)
+    
+    elif(ch == 2):
+        delete_job(cur, con)
+    
+    elif(ch==3):
+        delete_staff(cur, con)
+    
+    elif(ch==4):
+        delete_offence(cur, con)
+    
+    elif(ch == 5):
+        delete_appeal(cur, con)
+    
+    elif(ch == 6):
+        delete_visit(cur, con)
+
+    elif(ch!=7):
+        print("Enter valid value!")
 
 def view_display():
     print("View the table:")
@@ -46,6 +120,27 @@ def view_display():
     
     ch = int(input("Enter choice> "))
 
+    if(ch == 1):
+        view_prisoner(cur, con)
+    
+    elif(ch == 2):
+        view_job(cur, con)
+    
+    elif(ch==3):
+        view_staff(cur, con)
+    
+    elif(ch==4):
+        view_offence(cur, con)
+    
+    elif(ch == 5):
+        view_appeal(cur, con)
+    
+    elif(ch == 6):
+        view_visits(cur, con)
+    
+    elif(ch!=7):
+        print("Enter valid value!")
+        
     return
 
 def dispatch(ch):
@@ -79,7 +174,7 @@ while(1):
         else:
             print("Failed to connect")
         tmp = input("Enter any key to CONTINUE>")
-
+        #time.sleep(2)
         with con:
             cur = con.cursor()
             while(1):
@@ -91,17 +186,18 @@ while(1):
                 print("5. Logout")
                 ch = int(input("Enter choice> "))
                 tmp = sp.call('clear',shell=True)
-                printf("yee")
+                # print("yee")
                 if ch == 5:
                     break
                 else:
                     dispatch(ch)
-                    tmp = input("Enter any key to CONTINUE>")
+                    # tmp = input("Enter any key to CONTINUE>")
 
 
-    except:
+    except Exception as e:
         tmp = sp.call('clear',shell=True)
         print("Connection Refused: Either username or password is incorrect or user doesn't have access to database")
+        print(e)
         tmp = input("Enter any key to CONTINUE>")
     
    
