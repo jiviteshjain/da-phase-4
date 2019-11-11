@@ -2,7 +2,7 @@ import subprocess as sp
 import pymysql
 import pymysql.cursors
 
-from add import add_prisoner
+from add import *
 
 tables = ["Prisoners", "Jobs", "Staff", "Offences", "Appeals", "Visits", "Go back"]
 
@@ -17,7 +17,7 @@ def add_display():
     
     ch = int(input("Enter choice> "))
     if(ch == 1):
-        add_prisoner(cur, con)
+        add_appeal(cur, con)
     
     # elif(ch == 2):
     #     add_job(cur, con)
