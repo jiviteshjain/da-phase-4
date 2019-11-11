@@ -2,6 +2,8 @@ import subprocess as sp
 import pymysql
 import pymysql.cursors
 
+from add import add_prisoner
+
 tables = ["Prisoners", "Jobs", "Staff", "Offences", "Appeals", "Visits", "Go back"]
 
 def add_display():
@@ -17,20 +19,20 @@ def add_display():
     if(ch == 1):
         add_prisoner(cur, con)
     
-    elif(ch == 2):
-        add_job(cur, con)
+    # elif(ch == 2):
+    #     add_job(cur, con)
     
-    elif(ch==3):
-        add_staff(cur, con)
+    # elif(ch==3):
+    #     add_staff(cur, con)
     
-    elif(ch==4):
-        add_offence(cur, con)
+    # elif(ch==4):
+    #     add_offence(cur, con)
     
-    elif(ch == 5):
-        add_appeal(cur, con)
+    # elif(ch == 5):
+    #     add_appeal(cur, con)
 
-    elif(ch == 6):
-        add_visit(cur, con)
+    # elif(ch == 6):
+    #     add_visit(cur, con)
 
     elif(ch!=7):
         print("Enter valid value!")
@@ -147,16 +149,16 @@ def dispatch(ch):
 
     if(ch == 1): 
         add_display()
-    elif(ch == 2):
-        update_display()
-    elif(ch == 3):
-        delete_display()
-    elif(ch == 4):
-        view_display()
+    # elif(ch == 2):
+    #     update_display()
+    # elif(ch == 3):
+    #     delete_display()
+    # elif(ch == 4):
+    #     view_display()
     else:
         print("Error: Invalid Option")
 
-while(1):
+while True:
     tmp = sp.call('clear',shell=True)
     username = input("Username: ")
     password = input("Password: ")
@@ -171,33 +173,38 @@ while(1):
 
         if(con.open):
             print("Connected")
+            input("Press any key to continue.")
         else:
             print("Failed to connect")
-        tmp = input("Enter any key to CONTINUE>")
-        #time.sleep(2)
+            input("Press any key to continue.")
+            continue;
+        
         with con:
             cur = con.cursor()
-            while(1):
+            while True:
                 tmp = sp.call('clear',shell=True)
                 print("1. Add")
                 print("2. Update")
                 print("3. Delete")
                 print("4. View")
                 print("5. Logout")
+                print("6. Exit")
                 ch = int(input("Enter choice> "))
                 tmp = sp.call('clear',shell=True)
-                # print("yee")
+                
                 if ch == 5:
                     break
+                elif ch == 6:
+                    raise SystemExit;
                 else:
                     dispatch(ch)
-                    # tmp = input("Enter any key to CONTINUE>")
+                    input("Press any key to continue.")
 
 
     except Exception as e:
         tmp = sp.call('clear',shell=True)
         print("Connection Refused: Either username or password is incorrect or user doesn't have access to database")
         print(e)
-        tmp = input("Enter any key to CONTINUE>")
+        input("Press any key to continue.")
     
    
