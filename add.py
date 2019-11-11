@@ -313,12 +313,75 @@ def add_prison_staff(cur, con):
     attr['post'] = input('Post*: ')  # non nullable enum: handled by mysql
     attr['salary'] = input('Salary*: ')  # non nullable float: handled by mysql
 
-    query_str = f'INSERT INTO Prison.Staff({expand_keys(attr)}) VALUES(\
+    query_str = f'INSERT INTO Prison.Prison_Staff({expand_keys(attr)}) VALUES(\
         "{attr["first_name"]}",\
         "{attr["middle_name"]}",\
         "{attr["last_name"]}",\
         {quote(attr["dob"])},\
         "{attr["sex"]}",\
-            
+        {quote(attr["address"])},\
+        {quote(attr["phone"])},\
+        "{attr["post"]}",\
+        {attr["salary"]}\
     );'
+    
+    if attr['post'] != 'GUARD':
+        try:
+            cur.execute(query_str)
+            con.commit()
+            print('The new employee has been successfully entered into the system.')
+            input('Press any key to continue.')
+            return
+        except Exception as e:
+            print('Failed to insert into the database.')
+            con.rollback()
+            print(e)
+            input('Press any key to continue.')
+            return
+
+    # It is a guard
+
+    try:
+        cur.execute(query_str)
+        # con.commit()
+        # print('The new visitor has been successfully entered into the system.')
+        # input('Press any key to continue.')
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+
+    staff_id = cur.lastrowid
+
+    attr = {}
+
+    attr['shift'] = empty_to_null(input("Shift: "))
+    attr['wing'] = empty_to_null(input('Wing: '))
+    if attr['wing'] != 'NULL':
+        if len(attr['wing']) != 1 or not attr['wing'].isupper():
+            print('Please enter a wing from A to Z')
+            return
+    
+    attr['supervisor_id'] = empty_to_null(input('Supervisor\'s ID: '))
+
+    query_str = f'INSERT INTO Guards VALUES(\
+        {staff_id},\
+        {quote(attr["shift"])},\
+        {quote(attr["wing"])},\
+        {quote(attr["supervisor_id"])}\
+    );'
+    
+    try:
+        cur.execute(query_str)
+        con.commit()
+        print('The new employee has been successfully entered into the system.')
+        input('Press any key to continue.')
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+
     
