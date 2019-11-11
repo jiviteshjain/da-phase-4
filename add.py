@@ -312,4 +312,13 @@ def add_prison_staff(cur, con):
 
     attr['post'] = input('Post*: ')  # non nullable enum: handled by mysql
     attr['salary'] = input('Salary*: ')  # non nullable float: handled by mysql
+
+    query_str = f'INSERT INTO Prison.Staff({expand_keys(attr)}) VALUES(\
+        "{attr["first_name"]}",\
+        "{attr["middle_name"]}",\
+        "{attr["last_name"]}",\
+        {quote(attr["dob"])},\
+        "{attr["sex"]}",\
+            
+    );'
     
