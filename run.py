@@ -117,23 +117,23 @@ def view_display():
     if(ch == 1):
         view_prisoner(cur, con)
     
-    # elif(ch == 2):
-    #     view_job(cur, con)
+    elif(ch == 2):
+        view_job(cur, con)
     
-    # elif(ch==3):
-    #     view_staff(cur, con)
+    elif(ch==3):
+        view_staff(cur, con)
     
-    # elif(ch==4):
-    #     view_offence(cur, con)
+    elif(ch==4):
+        view_offence(cur, con)
     
-    # elif(ch == 5):
-    #     view_appeal(cur, con)
+    elif(ch == 5):
+        view_appeal(cur, con)
     
-    # elif(ch == 6):
-    #     view_visits(cur, con)
+    elif(ch == 6):
+        view_visits(cur, con)
     
-    # elif(ch!=7):
-    #     print("Enter valid value!")
+    elif(ch!=7):
+        print("Enter valid value!")
 
     input("Press Enter to continue>") 
     return

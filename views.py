@@ -55,7 +55,7 @@ def view_offence(cur, con):
             print("Format for DateTime: YYYY-MM-DD hh:mm:ss")
             d1 = input("Enter DateTime_begin: ")
             d2 = input("Enter DateTime_end: ")
-            query = "select A.id, A.description, A.date_time, A.location, A.severity, B.guard_id, C.prisoner_id from Offences A, Incident_Guards B, Incident_Prisoners C where A.id = B.offence_id and A.id = C.offence_id and A.date_time between " + d1 " and "+ d2 + ";"
+            query = "select A.id, A.description, A.date_time, A.location, A.severity, B.guard_id, C.prisoner_id from Offences A, Incident_Guards B, Incident_Prisoners C where A.id = B.offence_id and A.id = C.offence_id and A.date_time between " + d1 +" and "+ d2 + ";"
             print_query(query, con, cur)
             break
 
@@ -156,7 +156,6 @@ def view_staff(cur, con):
         ch = input("Enter choice> ")
         if (ch == '1'):
             s_id = input("Enter Staff ID: ")
-            f =
             query = "select * from Prison_Staff where id = " + s_id + ";"
             print_query(query, con, cur)
             query = "select shift, wing, supervisor_id from Guards where id = " + s_id + ";"
