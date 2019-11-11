@@ -58,7 +58,7 @@ def add_prisoner(cur, con):
     except NameError:
         print('Please enter a cell number between 1 and 999')
         return
-    if int(attr['cell']) < 1 or int(attr['cell']) > 100:
+    if int(attr['cell']) < 1 or int(attr['cell']) > 999:
         print('Please enter a cell number between 1 and 999')
         return
 
@@ -88,15 +88,17 @@ def add_prisoner(cur, con):
         "{attr["wing"]}",\
         "{attr["security_level"]}"\
     ); '
-    
+    # print(query_str)
     try:
         cur.execute(query_str)
         con.commit()
         print('The new inmate hase been successfully entered into the system.')
-    except MySQLError as e:
+        input('Press any key to continue.')
+    except Exception as e:
+        print('Failed to insert into the database.')
         con.rollback()
-        print('Failed to insert into the database')
         print(e)
+        input('Press any key to continue.')
     
 
 
