@@ -32,7 +32,7 @@ CREATE TABLE `Appeals` (
   KEY `prisoner_id` (`prisoner_id`),
   CONSTRAINT `Appeals_ibfk_1` FOREIGN KEY (`prisoner_id`) REFERENCES `Prisoners` (`id`),
   CONSTRAINT `Appeals_ibfk_2` FOREIGN KEY (`prisoner_id`) REFERENCES `Prisoners` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,6 +122,7 @@ CREATE TABLE `Guards` (
   `shift` enum('DAY','NIGHT') DEFAULT NULL,
   `wing` char(1) DEFAULT NULL,
   `supervisor_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
   KEY `supervisor_id` (`supervisor_id`),
   KEY `id` (`id`),
   CONSTRAINT `Guards_ibfk_1` FOREIGN KEY (`supervisor_id`) REFERENCES `Prison_Staff` (`id`),
@@ -268,7 +269,7 @@ CREATE TABLE `Prisoners` (
   `security_level` enum('LOW','MEDIUM','HIGH') NOT NULL,
   `wing` char(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -325,4 +326,4 @@ CREATE TABLE `Visits` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-11 23:49:25
+-- Dump completed on 2019-11-12  2:49:56
