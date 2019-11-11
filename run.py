@@ -108,7 +108,6 @@ def view_display():
 
     print("View the table:")
     i = 0
-    print(len(tables))
     while i < len(tables):
         i+=1       
         print(str(i) + ". " + tables[i-1])
@@ -135,7 +134,8 @@ def view_display():
     
     # elif(ch!=7):
     #     print("Enter valid value!")
-        
+
+    input("Press Enter to continue>") 
     return
 
 def dispatch(ch):

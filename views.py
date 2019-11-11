@@ -3,29 +3,25 @@ import pymysql
 import pymysql.cursors
 from tabulate import tabulate
 
-def print_table(results, cur):
-    widths = []
-    columns = []
-    tavnit = '|'
-    separator = '+' 
+def print_query(query, con, cur):
+    try:
+        cur.execute(query)
+        con.commit()
+        result = cur.fetchall()
+        
+        if len(result) != 0:
+            header = result[0].keys()
+            rows =  [x.values() for x in result]
+            print(tabulate(rows, header, tablefmt = 'grid'))
 
-    for cd in cur.description:
-        widths.append(max(cd[2], len(cd[0])))
-        columns.append(cd[0])
-
-    for w in widths:
-        tavnit += " %-"+"%ss |" % (w,)
-        separator += '-'*w + '--+'
-
-    print(separator)
-    print(tavnit % tuple(columns))
-    print(separator)
-    for row in results:
-        print(tavnit % row)
-    print(separator)
+    except Exception as e:
+        print("Error!")
+        con.rollback()
+        input("Press any key to continue")
 
 
 def view_appeal(cur, con):
+
     print("1. View all appeals")
     print("2. View appeals by a prisoner")
     print("3. Go back")
@@ -34,19 +30,13 @@ def view_appeal(cur, con):
         ch = int(input("Enter choice> "))
         if (ch == 1):
             query = "select * from Appeals;"
-            cur.execute(query)
-            con.commit()
-            results = cur.fetchall()
-            print_table(results, cur)
+            print_query(query, con, cur)
             break
 
         elif (ch == 2):
             p_id = int(input("Enter Prisoner ID\n"))
             query = "select * from Appeals where prisoner_id = %d" %(p_id)
-            cur.execute(query)
-            con.commit()
-            results = cur.fetchall()
-            print_table(results, cur)
+            print_query(query, con, cur)
             break
 
         elif(ch != 3):
@@ -66,15 +56,13 @@ def view_offence(cur, con):
             d1 = input("Enter DateTime_begin\n")
             d2 = input("Enter DateTime_end\n")
             query = "select A.id, A.description, A.date_time, A.location, A.severity, B.guard_id, C.prisoner_id from Offences A, Incident_Guards B, Incident_Prisoners C where A.id = B.offence_id and A.id = C.offence_id and A.date_time between d1 and d2;"
-            cur.execute(query)
-            con.commit()
+            print_query(query, con, cur)
             break
 
         elif (ch == 2):
             p_id = int(input("Enter Prisoner ID\n"))
             query = "select A.id, A.description, A.date_time, A.location, A.severity, B.guard_id, C.prisoner_id from Offences A, Incident_Guards B, Incident_Prisoners C where A.id = B.offence_id and A.id = C.offence_id and C.prisoner_id = %d;" %(p_id)
-            cur.execute(query)
-            con.commit()
+            print_query(query, con, cur)
             break
 
         elif(ch != 3):
@@ -95,15 +83,13 @@ def view_visits(cur, con):
             d1 = input("Enter DateTime_begin\n")
             d2 = input("Enter DateTime_end\n")
             query = "select * from Visits where date_time BETWEEN %s and %s" %(d1, d2)
-            cur.execute(query)
-            con.commit()
+            print_query(query, con, cur)
             break
 
         elif (ch == 2):
             p_id = int(input("Enter Prisoner ID\n"))
             query = "select * from Visits where prisoner_id = %d" %(p_id)
-            cur.execute(query)
-            con.commit()
+            print_query(query, con, cur)
             break
 
         elif(ch != 3):
@@ -112,34 +98,28 @@ def view_visits(cur, con):
 def view_prisoner(cur, con):
 
     query = "select id as 'Prisoner ID', concat(first_name, middle_name, last_name) as 'Name' from Prisoners;"
-    cur.execute(query)
-    con.commit()
-    results = cur.fetchall()
-    print(results)
-    input()
-    tabulate(results, headers="keys")
-    
+    print_query(query, con, cur)
 
     print("1. View Prisoner report")
     print("2. Go back")
 
     while(1):
-        ch = int(input("Enter choice> "))
-        if (ch == 1):
-            p_id = int(input("Enter Prisoner ID\n"))
-            query = "select * from Prisoners; select * from Visitors where prisoner_id = %d; select * from Emergency_Contacts where prisoner_id = %d; select * from Visits where prisoner_id = %d; select * from Appeals where prionser_id = %d; select A.job_name from Jobs A, Assignment_Prisoners B where B.job_id = A.id and B.prisoner_id = %d; select crimes from Crimes where prisoner_id = %d; select * from Offences A, Incident_Prisoners B where A.id = B.offence_id and B.prisoner_id = %d;" %(p_id, p_id, p_id, p_id, p_id, p_id, p_id)
-            cur.execute(query)
-            con.commit()
-            results = cur.fetchall()
-            print(results)
-            input()
-            tabulate(results)
+        ch = input("Enter choice> ")
+        if (ch == '1'):
+            p_id = input("Enter Prisoner ID: ")
+            queries = ["select * from Prisoners where id = ", "select * from Visitors where prisoner_id = ", "select * from Emergency_Contacts where prisoner_id = ", "select * from Visits where prisoner_id = ", "select * from Appeals where prisoner_id = ", "select A.job_name from Jobs A, Assignment_Prisoners B where B.job_id = A.id and B.prisoner_id = ", "select crime from Crimes where prisoner_id = ", "select * from Offences A, Incident_Prisoners B where A.id = B.offence_id and B.prisoner_id = "]
+            for i in queries:
+                query = i + p_id + ";"    
+                print_query(query, con, cur)
+            
+            #input()
             break
 
-        elif(ch != 2):
+        elif(ch != '2'):
             print("Enter valid command")
 
-
+        else:
+            break
 
 def view_job(cur, con):
     query = "select * from Jobs;"
@@ -154,8 +134,7 @@ def view_job(cur, con):
         if (ch == 1):
             j_id = int(input("Enter Job ID\n"))
             query = "select * from Jobs where id = %d; select prisoner_id from Jobs where job_id = %d; select guard_id from Jobs where job_id = %d;" %(j_id, j_id, j_id)
-            cur.execute(query)
-            con.commit()
+            print_query(query, con, cur)
             break
 
         elif(ch != 2):
@@ -165,8 +144,7 @@ def view_job(cur, con):
 
 def view_staff(cur, con):
     query = "select id as 'Staff_ID', concat(first_name, middle_name, last_name), sex, post as 'Name' from Jobs;"
-    cur.execute(query)
-    con.commit()
+    print_query(query, con, cur)
 
     print("1. View Staff report")
     print("2. Go back")
@@ -176,8 +154,7 @@ def view_staff(cur, con):
         if (ch == 1):
             s_id = int(input("Enter Staff ID\n"))
             query = "select * from Jobs where id = %d; select prisoner_id from Jobs where job_id = %d; select guard_id from Jobs where job_id = %d;" %(j_id, j_id, j_id)
-            cur.execute(query)
-            con.commit()
+            print_query(query, con, cur)
             break
 
         elif(ch != 2):
