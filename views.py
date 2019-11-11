@@ -27,21 +27,21 @@ def view_appeal(cur, con):
     print("3. Go back")
 
     while(1):
-        ch = int(input("Enter choice> "))
-        if (ch == 1):
+        ch = input("Enter choice> ")
+        if (ch == '1'):
             query = "select * from Appeals;"
             print_query(query, con, cur)
             break
 
-        elif (ch == 2):
-            p_id = int(input("Enter Prisoner ID\n"))
-            query = "select * from Appeals where prisoner_id = %d" %(p_id)
+        elif (ch == '2'):
+            p_id = input("Enter Prisoner ID: ")
+            query = "select * from Appeals where prisoner_id = " + p_id +";"
             print_query(query, con, cur)
             break
 
-        elif(ch != 3):
+        elif(ch != '3'):
             print("Enter valid command")
-    
+
 
 def view_offence(cur, con):
 
@@ -50,22 +50,22 @@ def view_offence(cur, con):
     print("3. Go back")
 
     while(1):
-        ch = int(input("Enter choice> "))
-        if (ch == 1):
+        ch = input("Enter choice> ")
+        if (ch == '1'):
             print("Format for DateTime: YYYY-MM-DD hh:mm:ss")
-            d1 = input("Enter DateTime_begin\n")
-            d2 = input("Enter DateTime_end\n")
-            query = "select A.id, A.description, A.date_time, A.location, A.severity, B.guard_id, C.prisoner_id from Offences A, Incident_Guards B, Incident_Prisoners C where A.id = B.offence_id and A.id = C.offence_id and A.date_time between d1 and d2;"
+            d1 = input("Enter DateTime_begin: ")
+            d2 = input("Enter DateTime_end: ")
+            query = "select A.id, A.description, A.date_time, A.location, A.severity, B.guard_id, C.prisoner_id from Offences A, Incident_Guards B, Incident_Prisoners C where A.id = B.offence_id and A.id = C.offence_id and A.date_time between " + d1 " and "+ d2 + ";"
             print_query(query, con, cur)
             break
 
-        elif (ch == 2):
-            p_id = int(input("Enter Prisoner ID\n"))
-            query = "select A.id, A.description, A.date_time, A.location, A.severity, B.guard_id, C.prisoner_id from Offences A, Incident_Guards B, Incident_Prisoners C where A.id = B.offence_id and A.id = C.offence_id and C.prisoner_id = %d;" %(p_id)
+        elif (ch == '2'):
+            p_id = input("Enter Prisoner ID: ")
+            query = "select A.id, A.description, A.date_time, A.location, A.severity, B.guard_id, C.prisoner_id from Offences A, Incident_Guards B, Incident_Prisoners C where A.id = B.offence_id and A.id = C.offence_id and C.prisoner_id = %s;" %(p_id)
             print_query(query, con, cur)
             break
 
-        elif(ch != 3):
+        elif(ch != '3'):
             print("Enter valid command")
    
 
@@ -88,7 +88,7 @@ def view_visits(cur, con):
 
         elif (ch == 2):
             p_id = int(input("Enter Prisoner ID\n"))
-            query = "select * from Visits where prisoner_id = %d" %(p_id)
+            query = "select * from Visits where prisoner_id = %s" %(p_id)
             print_query(query, con, cur)
             break
 
@@ -123,18 +123,21 @@ def view_prisoner(cur, con):
 
 def view_job(cur, con):
     query = "select * from Jobs;"
-    cur.execute(query)
-    con.commit()
+    print_query(query, con, cur)
 
     print("1. View Job report")
     print("2. Go back")
 
     while(1):
-        ch = int(input("Enter choice> "))
-        if (ch == 1):
-            j_id = int(input("Enter Job ID\n"))
-            query = "select * from Jobs where id = %d; select prisoner_id from Jobs where job_id = %d; select guard_id from Jobs where job_id = %d;" %(j_id, j_id, j_id)
-            print_query(query, con, cur)
+        ch = input("Enter choice> ")
+        if (ch == '1'):
+            j_id = input("Enter Job ID\n")
+            queries = ["select * from Jobs where id = ", "select prisoner_id from Jobs where job_id = ", "select guard_id from Jobs where job_id = "]
+            
+            for i in queries:
+                query = i + j_id + ";"
+                print_query(query, con, cur)
+            
             break
 
         elif(ch != 2):
@@ -150,14 +153,17 @@ def view_staff(cur, con):
     print("2. Go back")
 
     while(1):
-        ch = int(input("Enter choice> "))
-        if (ch == 1):
-            s_id = int(input("Enter Staff ID\n"))
-            query = "select * from Jobs where id = %d; select prisoner_id from Jobs where job_id = %d; select guard_id from Jobs where job_id = %d;" %(j_id, j_id, j_id)
+        ch = input("Enter choice> ")
+        if (ch == '1'):
+            s_id = input("Enter Staff ID: ")
+            f =
+            query = "select * from Prison_Staff where id = " + s_id + ";"
+            print_query(query, con, cur)
+            query = "select shift, wing, supervisor_id from Guards where id = " + s_id + ";"
             print_query(query, con, cur)
             break
 
-        elif(ch != 2):
+        elif(ch != '2'):
             print("Enter valid command")
 
 
