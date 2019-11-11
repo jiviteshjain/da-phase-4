@@ -2,6 +2,8 @@ import subprocess as sp
 import pymysql
 import pymysql.cursors
 
+from update import *
+
 tables = ["Prisoners", "Jobs", "Staff", "Offences", "Appeals", "Visits", "Go back"]
 
 def add_display():
@@ -42,7 +44,7 @@ def update_display():
     
     while i < len(tables):
         i+=1       
-        print(str(i) + ". " + tables[i])
+        print(str(i) + ". " + tables[i-1])
     
     ch = int(input("Enter choice> "))
     if(ch == 1):
@@ -116,7 +118,7 @@ def view_display():
     
     while i < len(tables):
         i+=1       
-        print(str(i) + ". " + tables[i])
+        print(str(i) + ". " + tables[i-1])
     
     ch = int(input("Enter choice> "))
 
