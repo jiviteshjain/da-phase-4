@@ -310,5 +310,6 @@ def add_prison_staff(cur, con):
         print('Please enter a valid 10 digit phone number')
         return
 
-    attr['post'] = input('Post*')
+    attr['post'] = input('Post*: ')  # non nullable enum: handled by mysql
+    attr['salary'] = input('Salary*: ')  # non nullable float: handled by mysql
     
