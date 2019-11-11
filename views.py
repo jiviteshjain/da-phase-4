@@ -2,6 +2,27 @@ import subprocess as sp
 import pymysql
 import pymysql.cursors
 
+def print_table(results, cur):
+    widths = []
+    columns = []
+    tavnit = '|'
+    separator = '+' 
+
+    for cd in cur.description:
+        widths.append(max(cd[2], len(cd[0])))
+        columns.append(cd[0])
+
+    for w in widths:
+        tavnit += " %-"+"%ss |" % (w,)
+        separator += '-'*w + '--+'
+
+    print(separator)
+    print(tavnit % tuple(columns))
+    print(separator)
+    for row in results:
+        print(tavnit % row)
+    print(separator)
+
 
 def view_appeal(cur, con):
     print("1. View all appeals")
@@ -14,6 +35,8 @@ def view_appeal(cur, con):
             query = "select * from Appeals;"
             cur.execute(query)
             con.commit()
+            results = cur.fetchall()
+            print_table(results, cur)
             break
 
         elif (ch == 2):
@@ -21,6 +44,8 @@ def view_appeal(cur, con):
             query = "select * from Appeals where prisoner_id = %d" %(p_id)
             cur.execute(query)
             con.commit()
+            results = cur.fetchall()
+            print_table(results, cur)
             break
 
         elif(ch != 3):

@@ -178,7 +178,7 @@ while(1):
         with con:
             cur = con.cursor()
             while(1):
-                tmp = sp.call('clear',shell=True)
+                tmp = sp.call('clear', shell=True)
                 print("1. Add")
                 print("2. Update")
                 print("3. Delete")
