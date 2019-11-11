@@ -72,6 +72,11 @@ def add_prisoner(cur, con):
         print('Please choose a security level out of LOW, MEDIUM or HIGH')
         return
 
+    crimes = input('Crimes as a comma separated list*: ')
+    crimes = crimes.split(',')
+    crimes = [x.strip() for x in crimes]
+    crimes = set(crimes)
+
     query_str = f'INSERT INTO Prison.Prisoners({expand_keys(attr)}) VALUES(\
         "{attr["first_name"]}",\
         "{attr["middle_name"]}",\
@@ -91,6 +96,29 @@ def add_prisoner(cur, con):
     # print(query_str)
     try:
         cur.execute(query_str)
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+
+    prisoner_id = cur.lastrowid
+    for crime in crimes:
+        query_str = f'INSERT INTO Prison.Crimes VALUES(\
+            {prisoner_id},\
+            "{crime}"\
+        ); '
+        try:
+            cur.execute(query_str)
+        except Exception as e:
+            print('Failed to insert into the database.')
+            con.rollback()
+            print(e)
+            input('Press any key to continue.')
+            return
+
+    try:
         con.commit()
         print('The new inmate hase been successfully entered into the system.')
         input('Press any key to continue.')
@@ -99,6 +127,7 @@ def add_prisoner(cur, con):
         con.rollback()
         print(e)
         input('Press any key to continue.')
+        return
     
 
 

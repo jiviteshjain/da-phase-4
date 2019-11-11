@@ -198,7 +198,7 @@ while True:
                     raise SystemExit;
                 else:
                     dispatch(ch)
-                    input("Press any key to continue.")
+                    # input("Press any key to continue.")
 
 
     except Exception as e:
