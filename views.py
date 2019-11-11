@@ -1,6 +1,7 @@
 import subprocess as sp
 import pymysql
 import pymysql.cursors
+from tabulate import tabulate
 
 def print_table(results, cur):
     widths = []
@@ -113,6 +114,11 @@ def view_prisoner(cur, con):
     query = "select id as 'Prisoner ID', concat(first_name, middle_name, last_name) as 'Name' from Prisoners;"
     cur.execute(query)
     con.commit()
+    results = cur.fetchall()
+    print(results)
+    input()
+    tabulate(results, headers="keys")
+    
 
     print("1. View Prisoner report")
     print("2. Go back")
@@ -124,6 +130,10 @@ def view_prisoner(cur, con):
             query = "select * from Prisoners; select * from Visitors where prisoner_id = %d; select * from Emergency_Contacts where prisoner_id = %d; select * from Visits where prisoner_id = %d; select * from Appeals where prionser_id = %d; select A.job_name from Jobs A, Assignment_Prisoners B where B.job_id = A.id and B.prisoner_id = %d; select crimes from Crimes where prisoner_id = %d; select * from Offences A, Incident_Prisoners B where A.id = B.offence_id and B.prisoner_id = %d;" %(p_id, p_id, p_id, p_id, p_id, p_id, p_id)
             cur.execute(query)
             con.commit()
+            results = cur.fetchall()
+            print(results)
+            input()
+            tabulate(results)
             break
 
         elif(ch != 2):
