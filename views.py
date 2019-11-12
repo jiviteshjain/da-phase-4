@@ -15,7 +15,7 @@ def print_query(query, con, cur):
             print(tabulate(rows, header, tablefmt = 'grid'))
         
         else:
-            print("None!")
+            print("Empty!")
 
     except Exception as e:
         print("Error!")
@@ -43,7 +43,10 @@ def view_appeal(cur, con):
             break
 
         elif(ch != '3'):
-            print("Enter valid c`ommand")
+            print("Enter valid command")
+
+        else:
+            break
 
 
 def view_offence(cur, con):
@@ -64,12 +67,16 @@ def view_offence(cur, con):
 
         elif (ch == '2'):
             p_id = input("Enter Prisoner ID: ")
-            query = "select A.id, A.description, A.date_time, A.location, A.severity, B.guard_id, C.prisoner_id from Offences A, Incident_Guards B, Incident_Prisoners C where A.id = B.offence_id and A.id = C.offence_id and C.prisoner_id = %s;" %(p_id)
+            print("\nOffences by the prisoner: ")
+            query = "select A.id, A.description, A.date_time, A.location, A.severity from Offences A, Incident_Prisoners C where A.id = C.offence_id and C.prisoner_id = %s;" %(p_id)
             print_query(query, con, cur)
             break
 
         elif(ch != '3'):
             print("Enter valid command")
+
+        else:
+            break
    
 
 
@@ -110,8 +117,8 @@ def view_prisoner(cur, con):
         ch = input("Enter choice> ")
         if (ch == '1'):
             p_id = input("Enter Prisoner ID: ")
-            titles = ["Prisoner Details", "Visitors", "Emergency Contacts", "Visits involving the prisoner", "Appeals made by the prisoner", "Jobs the prisoner works","Crimes committed", "Offences prisoner committed", ]
-            queries = ["select * from Prisoners where id = ", "select * from Visitors where prisoner_id = ", "select * from Emergency_Contacts where prisoner_id = ", "select * from Visits where prisoner_id = ", "select * from Appeals where prisoner_id = ", "select A.job_name from Jobs A, Assignment_Prisoners B where B.job_id = A.id and B.prisoner_id = ", "select crime from Crimes where prisoner_id = ", "select * from Offences A, Incident_Prisoners B where A.id = B.offence_id and B.prisoner_id = "]
+            titles = ["Prisoner Details", "Visitors", "Emergency Contacts", "Visits involving the prisoner", "Appeals made by the prisoner", "Jobs the prisoner works","Crimes committed", "Offences prisoner committed", "Volatility Level"]
+            queries = ["select * from Prisoners where id = ", "select * from Visitors where prisoner_id = ", "select * from Emergency_Contacts where prisoner_id = ", "select * from Visits where prisoner_id = ", "select * from Appeals where prisoner_id = ", "select A.job_name from Jobs A, Assignment_Prisoners B where B.job_id = A.id and B.prisoner_id = ", "select crime from Crimes where prisoner_id = ", "select * from Offences A, Incident_Prisoners B where A.id = B.offence_id and B.prisoner_id = ", "select count(*) as 'Volatility Level' from Incident_Prisoners where prisoner_id = "]
             i = 0
             while i < len(queries):
                 print("\n"+titles[i])
@@ -138,22 +145,29 @@ def view_job(cur, con):
     while(1):
         ch = input("Enter choice> ")
         if (ch == '1'):
-            j_id = input("Enter Job ID\n")
-            queries = ["select * from Jobs where id = ", "select prisoner_id from Jobs where job_id = ", "select guard_id from Jobs where job_id = "]
+            j_id = input("Enter Job ID: ")
+            titles = ["Job details", "Prisoners", "Guards"]
+            queries = ["select * from Jobs where id = ", "select A.prisoner_id, concat(B.first_name, ' ', B.middle_name,' ', B.last_name) as 'Name' from Assignment_Prisoners A, Prisoners B where A.prisoner_id = B.id and job_id = ", "select A.guard_id, concat(B.first_name, ' ',B.middle_name,' ',  B.last_name) as 'Name'  from Assignment_Guards A, Prison_Staff B where B.id = A.guard_id and job_id = "]
             
-            for i in queries:
-                query = i + j_id + ";"
+            i = 0
+            while i < len(queries):
+                print("\n"+titles[i])
+                query = queries[i] + j_id + ";"    
                 print_query(query, con, cur)
+                i += 1
             
             break
 
         elif(ch != 2):
             print("Enter valid command")
+        
+        else:
+            break
 
 
 
 def view_staff(cur, con):
-    query = "select id as 'Staff_ID', concat(first_name, middle_name, last_name), sex, post as 'Name' from Jobs;"
+    query = "select id as 'Staff_ID', concat(first_name, ' ', middle_name, ' ', last_name) as 'Name' , sex, post from Prison_Staff;"
     print_query(query, con, cur)
 
     print("1. View Staff report")
@@ -166,11 +180,33 @@ def view_staff(cur, con):
             query = "select * from Prison_Staff where id = " + s_id + ";"
             print_query(query, con, cur)
             query = "select shift, wing, supervisor_id from Guards where id = " + s_id + ";"
-            print_query(query, con, cur)
+            cur.execute(query)
+            con.commit()
+            result = cur.fetchall()
+
+            if len(result)!=0:
+                print("\nGuard Details: ")
+                header = result[0].keys()
+                rows =  [x.values() for x in result]
+                print(tabulate(rows, header, tablefmt = 'grid'))
+                print("\nWork Assignment duties: ")
+                query = "select A.job_id, B.job_name from Assignment_Guards A, Jobs B where A.job_id = B.id and A.guard_id = " + s_id + ";"
+                print_query(query, con, cur)
+                print("\nOffences that occured during the guard's presence: ")
+                query = "select A.offence_id, B.description from Incident_Guards A, Offences B where A.offence_id = B.id and A.guard_id = " + s_id + ";"
+                print_query(query, con, cur)
+            
+            else:
+                print("\nJobs the staff oversees: ")
+                query = "select id as 'job_id', job_name from Jobs where supervisor_id = " + s_id + ";"
+                print_query(query, con, cur)
             break
 
         elif(ch != '2'):
             print("Enter valid command")
+
+        else:
+            break
 
 
 
