@@ -442,7 +442,7 @@ def update_offence(cur, con):
             input('Press any key to continue. ')
             return
 
-    if(ch == 2):
+    elif(ch == 2):
         attr['date_time'] = input('Date and time of incident as YYYY-MM-DD HH:MM* (Press enter for the current date and time): ')
         if attr['date_time'] == '':
             attr['date_time'] = datetime.now().strftime('%Y-%m-%d %H:%M')
@@ -458,7 +458,7 @@ def update_offence(cur, con):
             input('Press any key to continue. ')
             return
 
-    if(ch == 3):
+    elif(ch == 3):
         attr['location'] = input('Location*: ')
         if attr['location'] == '':
             print('Error: Please enter a valid location')
@@ -475,7 +475,7 @@ def update_offence(cur, con):
             input('Press any key to continue. ')
             return
     
-    if(ch == 4):
+    elif(ch == 4):
         attr['severity'] = input('Severity* out of LOW, MEDIUM or HIGH: ')  # non null enum, handled by database
         if attr['location'] == '':
             print('Error: Please enter a valid location')
@@ -507,4 +507,62 @@ def update_offence(cur, con):
         print(e)
         input('Press any key to continue.')
         return
+
+def update_staff(cur, con):
+    attr = {}
+    print("Enter the id of the staff member whose details you want to update")
+    id = int(input())
+    query_string = "select * from Guards where id = %d ;" % (id)
+    cur.execute(query_string)
+    con.commit()
+    result = cur.fetchall()
+    is_guard = True
+    if(len(result) == 0):
+        is_guard = False
+    
+
+    staff_details = ["Name", "DOB", "Sex", "Address","Phone", "Post", "Salary"]
+    if(is_guard):
+        staff_details += ["Shift","Wing","Supervisor_id"]
+    print("Enter the number beside the attribute you want to update")
+    i = 0
+    while i < len(staff_details):
+        i += 1
+        print(str(i) + ". " + staff_details[i-1])
+    ch = int(input("Enter choice> "))
+
+    if(ch == 1):
+        name = input('Name*: ').split(' ')
+        if len(name) >= 3:
+            attr['first_name'] = name[0]
+            attr['middle_name'] = ' '.join(name[1:-1])
+            attr['last_name'] = name[-1]
+        elif len(name) == 2:
+            attr['first_name'] = name[0]
+            attr['middle_name'] = ''
+            attr['last_name'] = name[1]
+        elif len(name) == 1:
+            attr['first_name'] = name[0]
+            attr['middle_name'] = ''
+            attr['last_name'] = ''
+        else:
+            print('Error: Please enter the prisoner\'s name')
+            return
+        query = "update Staff set first_name= '%s', middle_name = '%s', last_name = '%s' where id = %d;" % (attr['first_name'],attr['middle_name'],attr['last_name'], id)
+        try:
+            cur.execute(query)
+            print("Updated details")
+        except Exception as e:
+            print("Failed to update")
+            con.rollback()
+            print(e)
+            input('Press any key to continue. ')
+            return
+    
+
+
+
+
+    
+
 

@@ -54,7 +54,7 @@ def update_display():
         update_job(cur, con)
     
     elif(ch==3):
-        update_prisoner(cur, con)
+       update_staff(cur, con)
     
     elif(ch == 2):
         update_job(cur, con)
