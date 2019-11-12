@@ -3,6 +3,8 @@ import pymysql
 import pymysql.cursors
 from views import *
 from add import *
+from update import *
+from delete import *
 
 tables = ["Prisoners", "Jobs", "Staff", "Offences", "Appeals", "Visits", "Go back"]
 
@@ -45,72 +47,64 @@ def add_display():
         print("Enter valid value!")
     
 
-# def update_display():
-#     print("Update the table:")
-#     i = 0
-    
-#     while i < len(tables):
-#         i+=1       
-#         print(str(i) + ". " + tables[i])
-    
-#     ch = int(input("Enter choice> "))
-#     if(ch == 1):
-#         update_prisoner(cur, con)
-    
-#     elif(ch == 2):
-#         update_job(cur, con)
-    
-#     elif(ch==3):
-#         update_staff(cur, con)
-    
-#     elif(ch==4):
-#         update_offence(cur, con)
-    
-#     elif(ch == 5):
-#         update_appeal(cur, con)
-    
-#     elif(ch==4):
-#         update_offence(cur, con)
-    
-#     elif(ch == 5):
-#         update_appeal(cur, con)
-    
-#     elif(ch == 6):
-#         update_visit(cur, con)
+def update_display():
+    print("Update the table:")
+    i = 0
+    tables_update = ["Prisoners", "Jobs", "Staff", "Offences", "Appeals","Go back"]
 
-#     elif(ch!=7):
-#         print("Enter valid value!")
+    while i < len(tables_update):
+        i+=1       
+        print(str(i) + ". " + tables_update[i-1])
+    
+    ch = int(input("Enter choice> "))
+    if(ch == 1):
+        update_prisoner(cur, con)
+    
+    elif(ch == 2):
+        update_job(cur, con)
+    
+    elif(ch==3):
+        update_staff(cur, con)
+    
+    elif(ch==4):
+        update_offence(cur, con)
+    
+    elif(ch == 5):
+        update_appeal(cur, con)
+
+    elif(ch!=6):
+        print("Enter valid value!")
         
 
-# def delete_display():
-#     print("Delete from the table:")
-#     i = 0
-#     while i < len(tables):
-#         i+=1       
-#         print(str(i) + ". " + tables[i])
+def delete_display():
+    print("Delete from the table:")
+    i = 0
+    while i < len(tables):
+        i+=1       
+        print(str(i) + ". " + tables[i-1])
     
-#     ch = int(input("Enter choice> "))
+    ch = int(input("Enter choice> "))
 
-#     if(ch == 1):
-#         delete_prisoner(cur, con)
+    if(ch == 1):
+        delete_prisoner(cur, con)
     
-#     elif(ch == 2):
-#         delete_job(cur, con)
+    elif(ch == 2):
+        delete_job(cur, con)
     
-#     elif(ch==3):
-#         delete_staff(cur, con)
+    elif(ch==3):
+        delete_staff(cur, con)
     
-#     elif(ch==4):
-#         delete_offence(cur, con)
+    elif(ch==4):
+        delete_offence(cur, con)
     
-#     elif(ch == 5):
-#         delete_appeal(cur, con)
+    elif(ch == 5):
+        delete_appeal(cur, con)
     
-#     elif(ch == 6):
-#         delete_visit(cur, con)
+    elif(ch == 6):
+        delete_visit(cur, con)
 
-#     elif(ch!=7):
-#         print("Enter valid value!")
+    elif(ch!=7):
+        print("Enter valid value!")
 
 def view_display():
 
