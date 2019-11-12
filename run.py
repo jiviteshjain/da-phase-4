@@ -179,27 +179,30 @@ while(1):
         #time.sleep(2)
         with con:
             cur = con.cursor()
-            while(1):
+            while True:
                 tmp = sp.call('clear', shell=True)
                 print("1. Add")
                 print("2. Update")
                 print("3. Delete")
                 print("4. View")
                 print("5. Logout")
+                print("6. Exit")
                 ch = input("Enter choice> ")
                 tmp = sp.call('clear',shell=True)
-                # print("yee")
+                
                 if ch == '5':
                     break
+                elif ch == 6:
+                    raise SystemExit
                 else:
                     dispatch(ch)
-                    # tmp = input("Enter any key to CONTINUE>")
+                    input("Press any key to continue.")
 
 
     except Exception as e:
         tmp = sp.call('clear',shell=True)
         print("Connection Refused: Either username or password is incorrect or user doesn't have access to database")
         print(e)
-        tmp = input("Enter any key to CONTINUE>")
+        input("Press any key to continue.")
     
    
