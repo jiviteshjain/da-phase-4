@@ -61,14 +61,14 @@ def view_offence(cur, con):
             print("Format for DateTime: YYYY-MM-DD hh:mm:ss")
             d1 = input("Enter DateTime_begin: ")
             d2 = input("Enter DateTime_end: ")
-            query = "select A.id, A.description, A.date_time, A.location, A.severity, B.guard_id, C.prisoner_id from Offences A, Incident_Guards B, Incident_Prisoners C where A.id = B.offence_id and A.id = C.offence_id and A.date_time between " + d1 +" and "+ d2 + ";"
+            query = "select A.offence_id, A.description, A.date_time, A.location, A.severity, B.prisoner_id, C.guard_id from Offences A left outer join Incident_Prisoners B on A.id = B.offence_id left outer join Incident_Guards C on A.id = C.offence_id where A.date_time between '" + d1 +"' and '" + d2 +"';"
             print_query(query, con, cur)
             break
 
         elif (ch == '2'):
             p_id = input("Enter Prisoner ID: ")
             print("\nOffences by the prisoner: ")
-            query = "select A.id, A.description, A.date_time, A.location, A.severity from Offences A, Incident_Prisoners C where A.id = C.offence_id and C.prisoner_id = %s;" %(p_id)
+            query = "select A.offence_id, A.description, A.date_time, A.location, A.severity, A.prisoner_id, B.guard_id from (select * from Incident_Prisoners, Offences where offence_id = id and prisoner_id = %s) A left outer join Incident_Guards B on A.id = B.offence_id;" %(p_id)
             print_query(query, con, cur)
             break
 
