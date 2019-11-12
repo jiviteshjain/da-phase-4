@@ -87,12 +87,12 @@ def add_prisoner(cur, con):
         return
 
     crimes = input('Crimes as a comma separated list*: ')
+    if crimes == '':
+        print('Please enter atleast one crime')
+        return
     crimes = crimes.split(',')
     crimes = [x.strip() for x in crimes]
     crimes = set(crimes)
-    if len(crimes) == 0:
-        print('Please enter atleast one crime')
-        return
 
     query_str = f'INSERT INTO Prison.Prisoners({expand_keys(attr)}) VALUES(\
         "{attr["first_name"]}",\
@@ -327,10 +327,345 @@ def add_prison_staff(cur, con):
     attr['post'] = input('Post*: ')  # non nullable enum: handled by mysql
     attr['salary'] = input('Salary*: ')  # non nullable float: handled by mysql
 
-    query_str = f'INSERT INTO Prison.Staff({expand_keys(attr)}) VALUES(\
+    query_str = f'INSERT INTO Prison.Prison_Staff({expand_keys(attr)}) VALUES(\
         "{attr["first_name"]}",\
         "{attr["middle_name"]}",\
         "{attr["last_name"]}",\
         {quote(attr["dob"])},\
         "{attr["sex"]}",\
-     ); '
+        {quote(attr["address"])},\
+        {quote(attr["phone"])},\
+        "{attr["post"]}",\
+        {attr["salary"]}\
+    );'
+    
+    if attr['post'] != 'GUARD':
+        try:
+            cur.execute(query_str)
+            con.commit()
+            print('The new employee has been successfully entered into the system.')
+            input('Press any key to continue.')
+            return
+        except Exception as e:
+            print('Failed to insert into the database.')
+            con.rollback()
+            print(e)
+            input('Press any key to continue.')
+            return
+
+    # It is a guard
+
+    try:
+        cur.execute(query_str)
+        # con.commit()
+        # print('The new visitor has been successfully entered into the system.')
+        # input('Press any key to continue.')
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+
+    staff_id = cur.lastrowid
+
+    attr = {}
+
+    attr['shift'] = empty_to_null(input("Shift: "))
+    attr['wing'] = empty_to_null(input('Wing: '))
+    if attr['wing'] != 'NULL':
+        if len(attr['wing']) != 1 or not attr['wing'].isupper():
+            print('Please enter a wing from A to Z')
+            return
+    
+    attr['supervisor_id'] = empty_to_null(input('Supervisor\'s ID: '))
+
+    query_str = f'INSERT INTO Guards VALUES(\
+        {staff_id},\
+        {quote(attr["shift"])},\
+        {quote(attr["wing"])},\
+        {quote(attr["supervisor_id"])}\
+    );'
+    
+    try:
+        cur.execute(query_str)
+        con.commit()
+        print('The new employee has been successfully entered into the system.')
+        input('Press any key to continue.')
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+
+def add_job(cur, con):
+    attr = {}
+    print('Enter details of the new job:')
+
+    attr['job_name'] = input('Job name*: ')
+    if attr['job_name'] == '':
+        print('Error: Please enter a job name')
+        return
+    
+    attr['working_hours_begin'] = empty_to_null(input('Start time: '))
+    attr['working_hours_end'] = empty_to_null(input('End time: '))
+
+    attr['supervisor_id'] = empty_to_null(input('Supervisor\'s ID: '))
+
+    guards = input('Guard ID\'s as a comma separated list: ')
+    if guards != '':
+        guards = guards.split(',')
+        guards = [x.strip() for x in guards]
+        guards = set(guards)
+    else:
+        guards = set()
+
+    prisoners = input('Prisoner ID\'s as a comma separated list*: ')
+    if prisoners == '':
+        print('Please enter atleast one prisoner')
+        return
+    prisoners = prisoners.split(',')
+    prisoners = [x.strip() for x in prisoners]
+    prisoners = set(prisoners)
+
+    if attr['supervisor_id'] != 'NULL':
+        try:
+            query_str = f'SELECT post FROM Prison.Prison_Staff WHERE supervisor_id = {attr["supervisor_id"]};'
+            cur.execute(query_str)
+            con.commit()
+            result = cur.fetchall()
+        except Exception as e:
+            print('Error: Please enter a valid supervisor ID.')
+            con.rollback()
+            print(e)
+            input('Press any key to continue.')
+            return
+
+        if len(result) == 0 or result[0]['post'] == 'GUARD':
+            print('Error: Please enter a valid supervisor ID, which does not belong to a guard.')
+            input('Press any key to continue.')
+            return
+
+    query_str = f'INSERT INTO Prison.Jobs({expand_keys(attr)}) VALUES(\
+        "{attr["job_name"]}",\
+        {quote(attr["working_hours_begin"])},\
+        {quote(attr["working_hours_end"])},\
+        {attr["supervisor_id"]}\
+    );'
+    
+    try:
+        cur.execute(query_str)
+        # con.commit()
+        # print('The new visitor has been successfully entered into the system.')
+        # input('Press any key to continue.')
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+
+    job_id = cur.lastrowid
+
+    for guard in guards:
+        query_str = f'INSERT INTO Prison.Assignment_Guards VALUES(\
+            {job_id},\
+            {guard}\
+        );'
+        try:
+            cur.execute(query_str)
+        except Exception as e:
+            print('Failed to insert into the database.')
+            con.rollback()
+            print(e)
+            input('Press any key to continue.')
+            return
+
+    for prisoner in prisoners:
+        query_str = f'INSERT INTO Prison.Assignment_Prisoners VALUES(\
+            {job_id},\
+            {prisoner}\
+        ); '
+        try:
+            cur.execute(query_str)
+        except Exception as e:
+            print('Failed to insert into the database.')
+            con.rollback()
+            print(e)
+            input('Press any key to continue.')
+            return
+
+    try:
+        con.commit()
+        print('The new job hase been successfully entered into the system.')
+        input('Press any key to continue.')
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+
+def add_offence(cur, con):
+    attr = {}
+    print('Enter details of the incident:')
+
+    attr['description'] = input('Description*: ')
+    if attr['description'] == '':
+        print('Error: Please enter a desciption.')
+        return
+
+    attr['date_time'] = input('Date and time of incident as YYYY-MM-DD HH:MM* (Press enter for the current date and time): ')
+    if attr['date_time'] == '':
+        attr['date_time'] = datetime.now().strftime('%Y-%m-%d %H:%M')
+    
+    attr['location'] = input('Location*: ')
+    if attr['location'] == '':
+        print('Error: Please enter a valid location')
+        return
+
+    attr['severity'] = input('Severity* out of LOW, MEDIUM or HIGH: ')  # non null enum, handled by database
+    
+    print('Recognised offence types: ASSAULT, ATTEMPTED ESCAPE, FELONY, RIOTS, CONTRABAND, DESTRUCTION OF PROPERTY, INSUBORDINATION, MISCELLANEOUS')
+    types = input('Offence types as a comma separated list*: ')
+    if types == '':
+        print('Error: Please enter atleast one offence type.')
+        return
+    types = types.split(',')
+    types = [x.strip() for x in types]
+    types = set(types)
+
+    guards = input('Guard ID\'s as a comma separated list: ')
+    if guards != '':
+        guards = guards.split(',')
+        guards = [x.strip() for x in guards]
+        guards = set(guards)
+    else:
+        guards = set()
+
+    prisoners = input('Prisoner ID\'s as a comma separated list*: ')
+    if prisoners == '':
+        print('Please enter atleast one prisoner')
+        return
+    prisoners = prisoners.split(',')
+    prisoners = [x.strip() for x in prisoners]
+    prisoners = set(prisoners)
+
+    query_str = f'INSERT INTO Prison.Offences({expand_keys(attr)}) VALUES(\
+        "{attr["description"]}",\
+        "{attr["date_time"]}",\
+        "{attr["location"]}",\
+        "{attr["severity"]}"\
+    );'
+
+    try:
+        cur.execute(query_str)
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+
+    offence_id = cur.lastrowid
+    for type in types:
+        query_str = f'INSERT INTO Prison.Offence_Type VALUES(\
+            {offence_id},\
+            "{type}"\
+        );'
+        try:
+            cur.execute(query_str)
+        except Exception as e:
+            print('Failed to insert into the database.')
+            con.rollback()
+            print(e)
+            input('Press any key to continue.')
+            return
+
+    for prisoner in prisoners:
+        query_str = f'INSERT INTO Prison.Incident_Prisoners VALUES(\
+            {offence_id},\
+            {prisoner}\
+        ); '
+        try:
+            cur.execute(query_str)
+        except Exception as e:
+            print('Failed to insert into the database.')
+            con.rollback()
+            print(e)
+            input('Press any key to continue.')
+            return
+
+    for guard in guards:
+        query_str = f'INSERT INTO Prison.Incident_Guards VALUES(\
+            {offence_id},\
+            {guard}\
+        );'
+        try:
+            cur.execute(query_str)
+        except Exception as e:
+            print('Failed to insert into the database.')
+            con.rollback()
+            print(e)
+            input('Press any key to continue.')
+            return
+
+    try:
+        con.commit()
+        print('The new incident hase been successfully entered into the system.')
+        input('Press any key to continue.')
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+
+def add_visit(cur, con):
+    attr = {}
+    print('Enter details of the visitation:')
+
+    attr['prisoner_id'] = empty_to_null(input('Prisoner ID*: '))
+    
+    attr['date_time'] = input('Date and time of incident as YYYY-MM-DD HH:MM* (Press enter for the current date and time): ')
+    if attr['date_time'] == '':
+        attr['date_time'] = datetime.now().strftime('%Y-%m-%d %H:%M')
+
+    name = input('Visitor\'s Name*: ').split(' ')
+    if len(name) >= 3:
+        attr['first_name'] = name[0]
+        attr['middle_name'] = ' '.join(name[1:-1])
+        attr['last_name'] = name[-1]
+    elif len(name) == 2:
+        attr['first_name'] = name[0]
+        attr['middle_name'] = ''
+        attr['last_name'] = name[1]
+    elif len(name) == 1:
+        attr['first_name'] = name[0]
+        attr['middle_name'] = ''
+        attr['last_name'] = ''
+    else:
+        print('Error: Please enter the visitor\'s name')
+        return
+
+    attr['guard_id'] = empty_to_null(input('Guard ID: '))
+
+    query_str = f'INSERT INTO Prison.Visits VALUES(\
+        {attr["prisoner_id"]},\
+        "{attr["date_time"]}",\
+        "{attr["first_name"]}",\
+        "{attr["middle_name"]}",\
+        "{attr["last_name"]}",\
+        {quote(attr["guard_id"])}\
+    );'
+    try:
+        cur.execute(query_str)
+        con.commit()
+        print('The visit has been successfully entered into the system.')
+        input('Press any key to continue.')
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
