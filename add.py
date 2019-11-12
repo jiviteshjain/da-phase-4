@@ -492,3 +492,117 @@ def add_job(cur, con):
         input('Press any key to continue.')
         return
 
+def add_offence(cur, con):
+    attr = {}
+    print('Enter details of the incident:')
+
+    attr['description'] = input('Description*: ')
+    if attr['description'] == '':
+        print('Error: Please enter a desciption.')
+        return
+
+    attr['date_time'] = input('Date and time of incident as YYYY-MM-DD HH:MM* (Press enter for the current date and time): ')
+    if attr['date_time'] == '':
+        attr['date_time'] = datetime.now().strftime('%Y-%m-%d %H:%M')
+    
+    attr['location'] = input('Location*: ')
+    if attr['location'] == '':
+        print('Error: Please enter a valid location')
+        return
+
+    attr['severity'] = input('Severity* out of LOW, MEDIUM or HIGH: ')  # non null enum, handled by database
+    
+    print('Recognised offence types: ASSAULT, ATTEMPTED ESCAPE, FELONY, RIOTS, CONTRABAND, DESTRUCTION OF PROPERTY, INSUBORDINATION, MISCELLANEOUS')
+    types = input('Offence types as a comma separated list*: ')
+    if types == '':
+        print('Error: Please enter atleast one offence type.')
+        return
+    types = types.split(',')
+    types = [x.strip() for x in types]
+    types = set(types)
+
+    guards = input('Guard ID\'s as a comma separated list: ')
+    if guards != '':
+        guards = guards.split(',')
+        guards = [x.strip() for x in guards]
+        guards = set(guards)
+    else:
+        guards = set()
+
+    prisoners = input('Prisoner ID\'s as a comma separated list*: ')
+    if prisoners == '':
+        print('Please enter atleast one prisoner')
+        return
+    prisoners = prisoners.split(',')
+    prisoners = [x.strip() for x in prisoners]
+    prisoners = set(prisoners)
+
+    query_str = f'INSERT INTO Prison.Offences({expand_keys(attr)}) VALUES(\
+        "{attr["description"]}",\
+        "{attr["date_time"]}",\
+        "{attr["location"]}",\
+        "{attr["severity"]}"\
+    );'
+
+    try:
+        cur.execute(query_str)
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+
+    offence_id = cur.lastrowid
+    for type in types:
+        query_str = f'INSERT INTO Prison.Offence_Type VALUES(\
+            {offence_id},\
+            "{type}"\
+        );'
+        try:
+            cur.execute(query_str)
+        except Exception as e:
+            print('Failed to insert into the database.')
+            con.rollback()
+            print(e)
+            input('Press any key to continue.')
+            return
+
+    for prisoner in prisoners:
+        query_str = f'INSERT INTO Prison.Incident_Prisoners VALUES(\
+            {offence_id},\
+            {prisoner}\
+        ); '
+        try:
+            cur.execute(query_str)
+        except Exception as e:
+            print('Failed to insert into the database.')
+            con.rollback()
+            print(e)
+            input('Press any key to continue.')
+            return
+
+    for guard in guards:
+        query_str = f'INSERT INTO Prison.Incident_Guards VALUES(\
+            {offence_id},\
+            {guard}\
+        );'
+        try:
+            cur.execute(query_str)
+        except Exception as e:
+            print('Failed to insert into the database.')
+            con.rollback()
+            print(e)
+            input('Press any key to continue.')
+            return
+
+    try:
+        con.commit()
+        print('The new incident hase been successfully entered into the system.')
+        input('Press any key to continue.')
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
