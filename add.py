@@ -606,3 +606,52 @@ def add_offence(cur, con):
         print(e)
         input('Press any key to continue.')
         return
+
+def add_visit(cur, con):
+    attr = {}
+    print('Enter details of the visitation:')
+
+    attr['prisoner_id'] = empty_to_null(input('Prisoner ID*: '))
+    
+    attr['date_time'] = input('Date and time of incident as YYYY-MM-DD HH:MM* (Press enter for the current date and time): ')
+    if attr['date_time'] == '':
+        attr['date_time'] = datetime.now().strftime('%Y-%m-%d %H:%M')
+
+    name = input('Visitor\'s Name*: ').split(' ')
+    if len(name) >= 3:
+        attr['first_name'] = name[0]
+        attr['middle_name'] = ' '.join(name[1:-1])
+        attr['last_name'] = name[-1]
+    elif len(name) == 2:
+        attr['first_name'] = name[0]
+        attr['middle_name'] = ''
+        attr['last_name'] = name[1]
+    elif len(name) == 1:
+        attr['first_name'] = name[0]
+        attr['middle_name'] = ''
+        attr['last_name'] = ''
+    else:
+        print('Error: Please enter the visitor\'s name')
+        return
+
+    attr['guard_id'] = empty_to_null(input('Guard ID: '))
+
+    query_str = f'INSERT INTO Prison.Visits VALUES(\
+        {attr["prisoner_id"]},\
+        "{attr["date_time"]}",\
+        "{attr["first_name"]}",\
+        "{attr["middle_name"]}",\
+        "{attr["last_name"]}",\
+        {quote(attr["guard_id"])}\
+    );'
+    try:
+        cur.execute(query_str)
+        con.commit()
+        print('The visit has been successfully entered into the system.')
+        input('Press any key to continue.')
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
