@@ -326,7 +326,7 @@ def update_job(cur, con):
         print("Enter a choice from the given ones")
         input("Press any key to continue. ")
         return
-    
+
     try:
         con.commit()
         print('Success')
@@ -338,6 +338,7 @@ def update_job(cur, con):
         input('Press any key to continue.')
         return
 
+
 def update_appeal(cur, con):
     id = int(input('Enter the prisoner\'s ID: '))
     attr = {}
@@ -348,13 +349,14 @@ def update_appeal(cur, con):
         i += 1
         print(str(i) + ". " + appeal_details[i-1])
     ch = int(input("Enter choice> "))
-    
+
     if(ch == 1):
         attr['filing_date'] = input(
             'Filing Date* (Press enter for today\'s date): ')
         if attr['filing_date'] == '':
             attr['filing_date'] = datetime.now().strftime('%Y-%m-%d')
-        query = "update Appeals set filing_date = '%s' where id = %d;" % (attr["filing_date"], id)
+        query = "update Appeals set filing_date = '%s' where id = %d;" % (
+            attr["filing_date"], id)
         try:
             cur.execute(query)
             print("Updated details")
@@ -368,7 +370,8 @@ def update_appeal(cur, con):
     elif(ch == 2):
         attr['hearing_date'] = empty_to_null(
             input('Hearing Date: '))  # can be null
-        query = "update Appeals set hearing_date = '%s' where id = %d;" % (attr["hearing_date"], id)
+        query = "update Appeals set hearing_date = '%s' where id = %d;" % (
+            attr["hearing_date"], id)
         try:
             cur.execute(query)
             print("Updated details")
@@ -380,8 +383,10 @@ def update_appeal(cur, con):
             return
 
     elif(ch == 3):
-        attr['status'] = input('Status:* ')  # enum and not null: checked by mysql
-        query = "update Appeals set status = '%s' where id = %d;" % (attr["status"], id)
+        # enum and not null: checked by mysql
+        attr['status'] = input('Status:* ')
+        query = "update Appeals set status = '%s' where id = %d;" % (
+            attr["status"], id)
         try:
             cur.execute(query)
             print("Updated details")
@@ -391,7 +396,11 @@ def update_appeal(cur, con):
             print(e)
             input('Press any key to continue. ')
             return
-    
+    else:
+        print("Enter a choice from the given ones")
+        input("Press any key to continue. ")
+        return
+
     try:
         con.commit()
         print('Success')
@@ -404,5 +413,98 @@ def update_appeal(cur, con):
         return
 
 
+def update_offence(cur, con):
+    attr = {}
+    print("Enter the id of the offence whose details you want to update")
+    id = int(input())
+    offence_details = ["Description", "Date and Time", "Location", "Severity"]
+    print("Enter the number beside the attribute you want to update")
+    i = 0
+    while i < len(offence_details):
+        i += 1
+        print(str(i) + ". " + offence_details[i-1])
+    ch = int(input("Enter choice> "))
 
+    if(ch == 1):
+        attr['description'] = input('Description*: ')
+        if attr['description'] == '':
+            print('Error: Please enter a desciption.')
+            return
+        query = "update Offences set description = '%s' where id = %d;" % (
+            attr["description"], id)
+        try:
+            cur.execute(query)
+            print("Updated details")
+        except Exception as e:
+            print("Failed to update")
+            con.rollback()
+            print(e)
+            input('Press any key to continue. ')
+            return
+
+    if(ch == 2):
+        attr['date_time'] = input('Date and time of incident as YYYY-MM-DD HH:MM* (Press enter for the current date and time): ')
+        if attr['date_time'] == '':
+            attr['date_time'] = datetime.now().strftime('%Y-%m-%d %H:%M')
+        query = "update Offences set date_time = '%s' where id = %d;" % (
+            attr["date_time"], id)
+        try:
+            cur.execute(query)
+            print("Updated details")
+        except Exception as e:
+            print("Failed to update")
+            con.rollback()
+            print(e)
+            input('Press any key to continue. ')
+            return
+
+    if(ch == 3):
+        attr['location'] = input('Location*: ')
+        if attr['location'] == '':
+            print('Error: Please enter a valid location')
+            return
+        query = "update Offences set location = '%s' where id = %d;" % (
+            attr["location"], id)
+        try:
+            cur.execute(query)
+            print("Updated details")
+        except Exception as e:
+            print("Failed to update")
+            con.rollback()
+            print(e)
+            input('Press any key to continue. ')
+            return
+    
+    if(ch == 4):
+        attr['severity'] = input('Severity* out of LOW, MEDIUM or HIGH: ')  # non null enum, handled by database
+        if attr['location'] == '':
+            print('Error: Please enter a valid location')
+            return
+        query = "update Offences set location = '%s' where id = %d;" % (
+            attr["location"], id)
+        try:
+            cur.execute(query)
+            print("Updated details")
+        except Exception as e:
+            print("Failed to update")
+            con.rollback()
+            print(e)
+            input('Press any key to continue. ')
+            return
+    
+    else:
+        print("Enter a choice from the given ones")
+        input("Press any key to continue. ")
+        return
+    
+    try:
+        con.commit()
+        print('Success')
+        input('Press any key to continue.')
+    except Exception as e:
+        print('Failed to update the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
 
