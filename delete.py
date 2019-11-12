@@ -1,4 +1,4 @@
-def delete_prisoner(con, cur):
+def delete_prisoner(cur, con):
     try:
         print("Enter ID of prisoner you want to delete")
         id = int(input())
@@ -6,15 +6,18 @@ def delete_prisoner(con, cur):
         cur.execute(query)
         con.commit()
         print("Deleted prisoner")
+        input("Press any key to continue")
+
 
     except Exception as e:
         con.rollback()
         print("Failed to delete from database")
         print(">>>>>>>>>>>>>", e)
+        input("Press any key to continue")
     return
 
 
-def delete_job(con, cur):
+def delete_job(cur, con):
     try:
         print("Enter ID of job you want to delete")
         id = int(input())
@@ -22,15 +25,19 @@ def delete_job(con, cur):
         cur.execute(query)
         con.commit()
         print("Deleted job")
+        input("Press any key to continue")
+
 
     except Exception as e:
         con.rollback()
         print("Failed to delete from database")
         print(">>>>>>>>>>>>>", e)
+        input("Press any key to continue")
+
     return
 
 
-def delete_staff(con, cur):
+def delete_staff(cur, con):
     try:
         print("Enter ID of the staff member you want to delete")
         id = int(input())
@@ -38,15 +45,19 @@ def delete_staff(con, cur):
         cur.execute(query)
         con.commit()
         print("Deleted staff member")
+        input("Press any key to continue")
+
 
     except Exception as e:
         con.rollback()
         print("Failed to delete from database")
         print(">>>>>>>>>>>>>", e)
+        input("Press any key to continue")
+
     return
 
 
-def delete_offence(con, cur):
+def delete_offence(cur, con):
     try:
         print("Enter ID of the offence you want to delete")
         id = int(input())
@@ -54,14 +65,18 @@ def delete_offence(con, cur):
         cur.execute(query)
         con.commit()
         print("Deleted offence")
+        input("Press any key to continue")
+
 
     except Exception as e:
         con.rollback()
         print("Failed to delete from database")
         print(">>>>>>>>>>>>>", e)
+        input("Press any key to continue")
+
     return
 
-def delete_appeal(con, cur):
+def delete_appeal(cur, con):
     try:
         print("Enter ID of the appeal you want to delete")
         id = int(input())
@@ -69,14 +84,18 @@ def delete_appeal(con, cur):
         cur.execute(query)
         con.commit()
         print("Deleted appeal")
+        input("Press any key to continue")
+
 
     except Exception as e:
         con.rollback()
         print("Failed to delete from database")
         print(">>>>>>>>>>>>>", e)
+        input("Press any key to continue")
+
     return
 
-def delete_visit(con, cur):
+def delete_visit(cur, con):
     try:
         print("Enter ID of the visit you want to delete")
         id = int(input())
@@ -84,10 +103,14 @@ def delete_visit(con, cur):
         cur.execute(query)
         con.commit()
         print("Deleted visit")
+        input("Press any key to continue")
+
 
     except Exception as e:
         con.rollback()
         print("Failed to delete from database")
         print(">>>>>>>>>>>>>", e)
+        input("Press any key to continue")
+
     return
 
