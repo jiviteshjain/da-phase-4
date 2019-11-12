@@ -80,12 +80,12 @@ def add_prisoner(cur, con):
         return
 
     crimes = input('Crimes as a comma separated list*: ')
+    if crimes == '':
+        print('Please enter atleast one crime')
+        return
     crimes = crimes.split(',')
     crimes = [x.strip() for x in crimes]
     crimes = set(crimes)
-    if len(crimes) == 0:
-        print('Please enter atleast one crime')
-        return
 
     query_str = f'INSERT INTO Prison.Prisoners({expand_keys(attr)}) VALUES(\
         "{attr["first_name"]}",\
@@ -384,4 +384,111 @@ def add_prison_staff(cur, con):
         print(e)
         input('Press any key to continue.')
 
+def add_job(cur, con):
+    attr = {}
+    print('Enter details of the new job:')
+
+    attr['job_name'] = input('Job name*: ')
+    if attr['job_name'] == '':
+        print('Error: Please enter a job name')
+        return
     
+    attr['working_hours_begin'] = empty_to_null(input('Start time: '))
+    attr['working_hours_end'] = empty_to_null(input('End time: '))
+
+    attr['supervisor_id'] = empty_to_null(input('Supervisor\'s ID: '))
+
+    guards = input('Guard ID\'s as a comma separated list: ')
+    if guards != '':
+        guards = guards.split(',')
+        guards = [x.strip() for x in guards]
+        guards = set(guards)
+    else:
+        guards = set()
+
+    prisoners = input('Prisoner ID\'s as a comma separated list*: ')
+    if prisoners == '':
+        print('Please enter atleast one prisoner')
+        return
+    prisoners = prisoners.split(',')
+    prisoners = [x.strip() for x in prisoners]
+    prisoners = set(prisoners)
+
+    if attr['supervisor_id'] != 'NULL':
+        try:
+            query_str = f'SELECT post FROM Prison.Prison_Staff WHERE supervisor_id = {attr["supervisor_id"]};'
+            cur.execute(query_str)
+            con.commit()
+            result = cur.fetchall()
+        except Exception as e:
+            print('Error: Please enter a valid supervisor ID.')
+            con.rollback()
+            print(e)
+            input('Press any key to continue.')
+            return
+
+        if len(result) == 0 or result[0]['post'] == 'GUARD':
+            print('Error: Please enter a valid supervisor ID, which does not belong to a guard.')
+            input('Press any key to continue.')
+            return
+
+    query_str = f'INSERT INTO Prison.Jobs({expand_keys(attr)}) VALUES(\
+        "{attr["job_name"]}",\
+        {quote(attr["working_hours_begin"])},\
+        {quote(attr["working_hours_end"])},\
+        {attr["supervisor_id"]}\
+    );'
+    
+    try:
+        cur.execute(query_str)
+        # con.commit()
+        # print('The new visitor has been successfully entered into the system.')
+        # input('Press any key to continue.')
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+
+    job_id = cur.lastrowid
+
+    for guard in guards:
+        query_str = f'INSERT INTO Prison.Assignment_Guards VALUES(\
+            {job_id},\
+            {guard}\
+        );'
+        try:
+            cur.execute(query_str)
+        except Exception as e:
+            print('Failed to insert into the database.')
+            con.rollback()
+            print(e)
+            input('Press any key to continue.')
+            return
+
+    for prisoner in prisoners:
+        query_str = f'INSERT INTO Prison.Assignment_Prisoners VALUES(\
+            {job_id},\
+            {prisoner}\
+        ); '
+        try:
+            cur.execute(query_str)
+        except Exception as e:
+            print('Failed to insert into the database.')
+            con.rollback()
+            print(e)
+            input('Press any key to continue.')
+            return
+
+    try:
+        con.commit()
+        print('The new job hase been successfully entered into the system.')
+        input('Press any key to continue.')
+    except Exception as e:
+        print('Failed to insert into the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+
