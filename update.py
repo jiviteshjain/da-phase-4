@@ -443,7 +443,8 @@ def update_offence(cur, con):
             return
 
     elif(ch == 2):
-        attr['date_time'] = input('Date and time of incident as YYYY-MM-DD HH:MM* (Press enter for the current date and time): ')
+        attr['date_time'] = input(
+            'Date and time of incident as YYYY-MM-DD HH:MM* (Press enter for the current date and time): ')
         if attr['date_time'] == '':
             attr['date_time'] = datetime.now().strftime('%Y-%m-%d %H:%M')
         query = "update Offences set date_time = '%s' where id = %d;" % (
@@ -474,9 +475,10 @@ def update_offence(cur, con):
             print(e)
             input('Press any key to continue. ')
             return
-    
+
     elif(ch == 4):
-        attr['severity'] = input('Severity* out of LOW, MEDIUM or HIGH: ')  # non null enum, handled by database
+        # non null enum, handled by database
+        attr['severity'] = input('Severity* out of LOW, MEDIUM or HIGH: ')
         if attr['location'] == '':
             print('Error: Please enter a valid location')
             return
@@ -491,12 +493,12 @@ def update_offence(cur, con):
             print(e)
             input('Press any key to continue. ')
             return
-    
+
     else:
         print("Enter a choice from the given ones")
         input("Press any key to continue. ")
         return
-    
+
     try:
         con.commit()
         print('Success')
@@ -507,6 +509,7 @@ def update_offence(cur, con):
         print(e)
         input('Press any key to continue.')
         return
+
 
 def update_staff(cur, con):
     attr = {}
@@ -519,11 +522,11 @@ def update_staff(cur, con):
     is_guard = True
     if(len(result) == 0):
         is_guard = False
-    
 
-    staff_details = ["Name", "DOB", "Sex", "Address","Phone", "Post", "Salary"]
+    staff_details = ["Name", "DOB", "Sex",
+                     "Address", "Phone", "Post", "Salary"]
     if(is_guard):
-        staff_details += ["Shift","Wing","Supervisor_id"]
+        staff_details += ["Shift", "Wing", "Supervisor_id"]
     print("Enter the number beside the attribute you want to update")
     i = 0
     while i < len(staff_details):
@@ -548,7 +551,22 @@ def update_staff(cur, con):
         else:
             print('Error: Please enter the prisoner\'s name')
             return
-        query = "update Staff set first_name= '%s', middle_name = '%s', last_name = '%s' where id = %d;" % (attr['first_name'],attr['middle_name'],attr['last_name'], id)
+        query = "update Staff set first_name= '%s', middle_name = '%s', last_name = '%s' where id = %d;" % (
+            attr['first_name'], attr['middle_name'], attr['last_name'], id)
+        try:
+            cur.execute(query)
+            print("Updated details")
+        except Exception as e:
+            print("Failed to update")
+            con.rollback()
+            print(e)
+            input('Press any key to continue. ')
+            return
+
+    elif(ch == 2):
+        attr['dob'] = empty_to_null(
+            input('Date of birth as YYYY-MM-DD: '))  # date: checked by mysql
+        query = "update Staff set dob= '%s' where id = %d;" % (attr["dob"], id)
         try:
             cur.execute(query)
             print("Updated details")
@@ -559,10 +577,131 @@ def update_staff(cur, con):
             input('Press any key to continue. ')
             return
     
+    elif(ch == 3):
+        attr['sex'] = input('Sex (M, F, OTHER)*: ')  # enum: checked by mysql
+        query = "update Staff set sex= '%s' where id = %d;" % (attr["sex"], id)
+        try:
+            cur.execute(query)
+            print("Updated details")
+        except Exception as e:
+            print("Failed to update")
+            con.rollback()
+            print(e)
+            input('Press any key to continue. ')
+            return
 
-
-
-
+    elif(ch == 4):
+        attr['address'] = empty_to_null(input('Address: '))
+        query = "update Staff set address= '%s' where id = %d;" % (attr["address"], id)
+        try:
+            cur.execute(query)
+            print("Updated details")
+        except Exception as e:
+            print("Failed to update")
+            con.rollback()
+            print(e)
+            input('Press any key to continue. ')
+            return
     
+    elif(ch == 5):
+        attr['phone'] = input('Phone: ')
+        if attr['phone'] == '':
+            attr['phone'] = 'NULL'
+        elif not len(attr['phone']) == 10 or not attr['phone'].isnumeric():
+            print('Please enter a valid 10 digit phone number')
+            return
+        query = "update Staff set phone = '%s' where id = %d;" % (attr["phone"], id)
+        try:
+            cur.execute(query)
+            print("Updated details")
+        except Exception as e:
+            print("Failed to update")
+            con.rollback()
+            print(e)
+            input('Press any key to continue. ')
+            return
 
+    elif(ch == 6):
+        attr['post'] = input('Post*: ')  # non nullable enum: handled by mysql
+        query = "update Staff set post = '%s' where id = %d;" % (attr["post"], id)
+        try:
+            cur.execute(query)
+            print("Updated details")
+        except Exception as e:
+            print("Failed to update")
+            con.rollback()
+            print(e)
+            input('Press any key to continue. ')
+            return
 
+    elif(ch == 7):
+        attr['salary'] = input('Salary*: ')  # non nullable float: handled by mysql
+        query = "update Staff set salary = '%s' where id = %d;" % (attr["salary"], id)
+        try:
+            cur.execute(query)
+            print("Updated details")
+        except Exception as e:
+            print("Failed to update")
+            con.rollback()
+            print(e)
+            input('Press any key to continue. ')
+            return
+    elif(is_guard and ch==8):
+        attr['shift'] = empty_to_null(input("Shift: "))
+        query = "update Guards set shift = '%s' where id = %d;" % (attr["shift"], id)
+        try:
+            cur.execute(query)
+            print("Updated details")
+        except Exception as e:
+            print("Failed to update")
+            con.rollback()
+            print(e)
+            input('Press any key to continue. ')
+            return
+
+    elif(is_guard and ch==9):
+        attr['wing'] = empty_to_null(input('Wing: '))
+        if attr['wing'] != 'NULL':
+            if len(attr['wing']) != 1 or not attr['wing'].isupper():
+                print('Please enter a wing from A to Z')
+                return
+        query = "update Guards set wing = '%s' where id = %d;" % (attr["wing"], id)
+        try:
+            cur.execute(query)
+            print("Updated details")
+        except Exception as e:
+            print("Failed to update")
+            con.rollback()
+            print(e)
+            input('Press any key to continue. ')
+            return
+
+    elif(is_guard and ch==10):
+        attr['supervisor_id'] = empty_to_null(input('Supervisor\'s ID: '))
+        query = "update Guards set supervisor_id = '%s' where id = %d;" % (attr["supervisor_id"], id)
+        try:
+            cur.execute(query)
+            print("Updated details")
+        except Exception as e:
+            print("Failed to update")
+            con.rollback()
+            print(e)
+            input('Press any key to continue. ')
+            return
+
+    else:
+        print("Enter a choice from the given ones")
+        input("Press any key to continue. ")
+        return
+
+    try:
+        con.commit()
+        print('Success')
+        input('Press any key to continue.')
+    except Exception as e:
+        print('Failed to update the database.')
+        con.rollback()
+        print(e)
+        input('Press any key to continue.')
+        return
+    
