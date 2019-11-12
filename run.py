@@ -15,32 +15,32 @@ def add_display():
         i+=1       
         print(str(i) + ". " + tables_add[i-1])
     
-    ch = int(input("Enter choice> "))
-    if(ch == 1):
+    ch = input("Enter choice> ")
+    if(ch == '1'):
         add_prisoner(cur, con)
     
-    elif(ch == 2):
+    elif(ch == '2'):
         add_job(cur, con)
     
-    elif(ch==3):
+    elif(ch=='3'):
         add_prison_staff(cur, con)
     
-    elif(ch==4):
+    elif(ch == '4'):
         add_offence(cur, con)
     
-    elif(ch == 5):
+    elif(ch == '5'):
         add_appeal(cur, con)
 
-    elif(ch == 6):
+    elif(ch == '6'):
         add_visit(cur, con)
 
-    elif(ch ==7):
+    elif(ch == '7'):
         add_visitor(cur, con)
     
-    elif(ch ==8):
+    elif(ch == '8'):
         add_emergency_contact(cur, con)
     
-    elif(ch != 9):
+    elif(ch != '9'):
         print("Enter valid value!")
     
 
@@ -119,27 +119,27 @@ def view_display():
         i+=1       
         print(str(i) + ". " + tables[i-1])
     
-    ch = int(input("Enter choice> "))
+    ch = input("Enter choice> ")
 
-    if(ch == 1):
+    if(ch == '1'):
         view_prisoner(cur, con)
     
-    elif(ch == 2):
+    elif(ch == '2'):
         view_job(cur, con)
     
-    elif(ch==3):
+    elif(ch == '3'):
         view_staff(cur, con)
     
-    elif(ch==4):
+    elif(ch == '4'):
         view_offence(cur, con)
     
-    elif(ch == 5):
+    elif(ch == '5'):
         view_appeal(cur, con)
     
-    elif(ch == 6):
+    elif(ch == '6'):
         view_visits(cur, con)
     
-    elif(ch!=7):
+    elif(ch != '7'):
         print("Enter valid value!")
 
     input("Press Enter to continue>") 
@@ -147,13 +147,13 @@ def view_display():
 
 def dispatch(ch):
 
-    if(ch == 1): 
+    if(ch == '1'): 
         add_display()
-    elif(ch == 2):
+    elif(ch == '2'):
         update_display()
-    elif(ch == 3):
+    elif(ch == '3'):
         delete_display()
-    elif(ch == 4):
+    elif(ch == '4'):
         view_display()
     else:
         print("Error: Invalid Option")
@@ -186,10 +186,10 @@ while(1):
                 print("3. Delete")
                 print("4. View")
                 print("5. Logout")
-                ch = int(input("Enter choice> "))
+                ch = input("Enter choice> ")
                 tmp = sp.call('clear',shell=True)
                 # print("yee")
-                if ch == 5:
+                if ch == '5':
                     break
                 else:
                     dispatch(ch)
