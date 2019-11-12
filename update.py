@@ -294,7 +294,7 @@ def update_job(cur, con):
         attr['supervisor_id'] = empty_to_null(input('Supervisor\'s ID: '))
         if attr['supervisor_id'] != 'NULL':
             try:
-                query_str = f'SELECT post FROM Prison.Prison_Staff WHERE supervisor_id = {attr["supervisor_id"]};'
+                query_str = f'SELECT post FROM Prison.Prison_Prison_Staff WHERE supervisor_id = {attr["supervisor_id"]};'
                 cur.execute(query_str)
                 con.commit()
                 result = cur.fetchall()
@@ -479,7 +479,7 @@ def update_offence(cur, con):
     elif(ch == 4):
         # non null enum, handled by database
         attr['severity'] = input('Severity* out of LOW, MEDIUM or HIGH: ')
-        if attr['location'] == '':
+        if attr['severity'] == '':
             print('Error: Please enter a valid location')
             return
         query = "update Offences set location = '%s' where id = %d;" % (
@@ -551,7 +551,7 @@ def update_staff(cur, con):
         else:
             print('Error: Please enter the prisoner\'s name')
             return
-        query = "update Staff set first_name= '%s', middle_name = '%s', last_name = '%s' where id = %d;" % (
+        query = "update Prison_Staff set first_name= '%s', middle_name = '%s', last_name = '%s' where id = %d;" % (
             attr['first_name'], attr['middle_name'], attr['last_name'], id)
         try:
             cur.execute(query)
@@ -566,7 +566,7 @@ def update_staff(cur, con):
     elif(ch == 2):
         attr['dob'] = empty_to_null(
             input('Date of birth as YYYY-MM-DD: '))  # date: checked by mysql
-        query = "update Staff set dob= '%s' where id = %d;" % (attr["dob"], id)
+        query = "update Prison_Staff set dob= '%s' where id = %d;" % (attr["dob"], id)
         try:
             cur.execute(query)
             print("Updated details")
@@ -579,7 +579,7 @@ def update_staff(cur, con):
     
     elif(ch == 3):
         attr['sex'] = input('Sex (M, F, OTHER)*: ')  # enum: checked by mysql
-        query = "update Staff set sex= '%s' where id = %d;" % (attr["sex"], id)
+        query = "update Prison_Staff set sex= '%s' where id = %d;" % (attr["sex"], id)
         try:
             cur.execute(query)
             print("Updated details")
@@ -592,7 +592,7 @@ def update_staff(cur, con):
 
     elif(ch == 4):
         attr['address'] = empty_to_null(input('Address: '))
-        query = "update Staff set address= '%s' where id = %d;" % (attr["address"], id)
+        query = "update Prison_Staff set address= '%s' where id = %d;" % (attr["address"], id)
         try:
             cur.execute(query)
             print("Updated details")
@@ -610,7 +610,7 @@ def update_staff(cur, con):
         elif not len(attr['phone']) == 10 or not attr['phone'].isnumeric():
             print('Please enter a valid 10 digit phone number')
             return
-        query = "update Staff set phone = '%s' where id = %d;" % (attr["phone"], id)
+        query = "update Prison_Staff set phone = '%s' where id = %d;" % (attr["phone"], id)
         try:
             cur.execute(query)
             print("Updated details")
@@ -623,7 +623,7 @@ def update_staff(cur, con):
 
     elif(ch == 6):
         attr['post'] = input('Post*: ')  # non nullable enum: handled by mysql
-        query = "update Staff set post = '%s' where id = %d;" % (attr["post"], id)
+        query = "update Prison_Staff set post = '%s' where id = %d;" % (attr["post"], id)
         try:
             cur.execute(query)
             print("Updated details")
@@ -636,7 +636,7 @@ def update_staff(cur, con):
 
     elif(ch == 7):
         attr['salary'] = input('Salary*: ')  # non nullable float: handled by mysql
-        query = "update Staff set salary = '%s' where id = %d;" % (attr["salary"], id)
+        query = "update Prison_Staff set salary = '%s' where id = %d;" % (attr["salary"], id)
         try:
             cur.execute(query)
             print("Updated details")

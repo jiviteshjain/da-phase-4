@@ -78,10 +78,12 @@ def update_display():
 
 def delete_display():
     print("Delete from the table:")
+    tables_delete = ["Prisoners", "Jobs", "Staff", "Offences", "Appeals","Go back"]
+
     i = 0
-    while i < len(tables):
+    while i < len(tables_delete):
         i+=1       
-        print(str(i) + ". " + tables[i-1])
+        print(str(i) + ". " + tables_delete[i-1])
     
     ch = int(input("Enter choice> "))
 
@@ -99,11 +101,8 @@ def delete_display():
     
     elif(ch == 5):
         delete_appeal(cur, con)
-    
-    elif(ch == 6):
-        delete_visit(cur, con)
 
-    elif(ch!=7):
+    elif(ch!=6):
         print("Enter valid value!")
 
 def view_display():

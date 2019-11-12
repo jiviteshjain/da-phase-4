@@ -95,22 +95,5 @@ def delete_appeal(cur, con):
 
     return
 
-def delete_visit(cur, con):
-    try:
-        print("Enter ID of the visit you want to delete")
-        id = int(input())
-        query = "delete from Visits where id = %d ; " % (id)
-        cur.execute(query)
-        con.commit()
-        print("Deleted visit")
-        input("Press any key to continue")
 
-
-    except Exception as e:
-        con.rollback()
-        print("Failed to delete from database")
-        print(">>>>>>>>>>>>>", e)
-        input("Press any key to continue")
-
-    return
 
