@@ -5,37 +5,44 @@ from views import *
 
 tables = ["Prisoners", "Jobs", "Staff", "Offences", "Appeals", "Visits", "Go back"]
 
-# def add_display():
+def add_display():
 
-#     print("Add to the table:")
-#     i = 0
-    
-#     while i < len(tables):
-#         i+=1       
-#         print(str(i) + ". " + tables[i-1])
-    
-#     ch = int(input("Enter choice> "))
-#     if(ch == 1):
-#         add_prisoner(cur, con)
-    
-#     elif(ch == 2):
-#         add_job(cur, con)
-    
-#     elif(ch==3):
-#         add_staff(cur, con)
-    
-#     elif(ch==4):
-#         add_offence(cur, con)
-    
-#     elif(ch == 5):
-#         add_appeal(cur, con)
+    print("Add to the table:")
+    i = 0
+    tables_add = ["Prisoners", "Jobs", "Staff", "Offences", "Appeals", "Visits", "Visitors", "Emergency Contacts", "Go back"]
 
-#     elif(ch == 6):
-#         add_visit(cur, con)
+    while i < len(tables_add):
+        i+=1       
+        print(str(i) + ". " + tables_add[i-1])
+    
+    ch = int(input("Enter choice> "))
+    if(ch == 1):
+        add_prisoner(cur, con)
+    
+    elif(ch == 2):
+        add_job(cur, con)
+    
+    elif(ch==3):
+        add_prison_staff(cur, con)
+    
+    elif(ch==4):
+        add_offence(cur, con)
+    
+    elif(ch == 5):
+        add_appeal(cur, con)
 
-#     elif(ch!=7):
-#         print("Enter valid value!")
-        
+    elif(ch == 6):
+        add_visit(cur, con)
+
+    elif(ch ==7):
+        add_visitor(cur, con)
+    
+    elif(ch ==8):
+        add_emergency_contact(cur, con)
+    
+    elif(ch != 9):
+        print("Enter valid value!")
+    
 
 # def update_display():
 #     print("Update the table:")

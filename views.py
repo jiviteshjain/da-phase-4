@@ -90,20 +90,24 @@ def view_visits(cur, con):
         ch = int(input("Enter choice> "))
         if (ch == 1):
             print("Format for DateTime: YYYY-MM-DD hh:mm:ss")
-            d1 = input("Enter DateTime_begin\n")
-            d2 = input("Enter DateTime_end\n")
-            query = "select * from Visits where date_time BETWEEN %s and %s" %(d1, d2)
+            d1 = input("Enter DateTime_begin: ")
+            d2 = input("Enter DateTime_end: ")
+            print(d1)
+            query = "select * from Visits where date_time BETWEEN '" + d1 + "' and '"+ d2 +"';"
             print_query(query, con, cur)
             break
 
         elif (ch == 2):
-            p_id = int(input("Enter Prisoner ID\n"))
+            p_id = int(input("Enter Prisoner ID: "))
             query = "select * from Visits where prisoner_id = %s" %(p_id)
             print_query(query, con, cur)
             break
 
         elif(ch != 3):
             print("Enter valid command")
+
+        else:
+            break
 
 def view_prisoner(cur, con):
 
