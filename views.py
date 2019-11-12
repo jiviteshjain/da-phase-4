@@ -13,6 +13,9 @@ def print_query(query, con, cur):
             header = result[0].keys()
             rows =  [x.values() for x in result]
             print(tabulate(rows, header, tablefmt = 'grid'))
+        
+        else:
+            print("None!")
 
     except Exception as e:
         print("Error!")
@@ -40,7 +43,7 @@ def view_appeal(cur, con):
             break
 
         elif(ch != '3'):
-            print("Enter valid command")
+            print("Enter valid c`ommand")
 
 
 def view_offence(cur, con):
@@ -107,10 +110,14 @@ def view_prisoner(cur, con):
         ch = input("Enter choice> ")
         if (ch == '1'):
             p_id = input("Enter Prisoner ID: ")
+            titles = ["Prisoner Details", "Visitors", "Emergency Contacts", "Visits involving the prisoner", "Appeals made by the prisoner", "Jobs the prisoner works","Crimes committed", "Offences prisoner committed", ]
             queries = ["select * from Prisoners where id = ", "select * from Visitors where prisoner_id = ", "select * from Emergency_Contacts where prisoner_id = ", "select * from Visits where prisoner_id = ", "select * from Appeals where prisoner_id = ", "select A.job_name from Jobs A, Assignment_Prisoners B where B.job_id = A.id and B.prisoner_id = ", "select crime from Crimes where prisoner_id = ", "select * from Offences A, Incident_Prisoners B where A.id = B.offence_id and B.prisoner_id = "]
-            for i in queries:
-                query = i + p_id + ";"    
+            i = 0
+            while i < len(queries):
+                print("\n"+titles[i])
+                query = queries[i] + p_id + ";"    
                 print_query(query, con, cur)
+                i += 1
             
             #input()
             break
