@@ -16,6 +16,14 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Current Database: `Prison`
+--
+
+/* CREATE DATABASE !32312 IF NOT EXISTS Prison !40100 DEFAULT CHARACTER SET latin1; */
+
+USE `Prison`;
+
+--
 -- Table structure for table `Appeals`
 --
 
@@ -34,6 +42,16 @@ CREATE TABLE `Appeals` (
   CONSTRAINT `Appeals_ibfk_2` FOREIGN KEY (`prisoner_id`) REFERENCES `Prisoners` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Appeals`
+--
+
+LOCK TABLES `Appeals` WRITE;
+/*!40000 ALTER TABLE `Appeals` DISABLE KEYS */;
+INSERT INTO `Appeals` VALUES (1,'2019-11-12',NULL,'FILED',1);
+/*!40000 ALTER TABLE `Appeals` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `Assignment_Guards`
@@ -55,6 +73,15 @@ CREATE TABLE `Assignment_Guards` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `Assignment_Guards`
+--
+
+LOCK TABLES `Assignment_Guards` WRITE;
+/*!40000 ALTER TABLE `Assignment_Guards` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Assignment_Guards` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Assignment_Prisoners`
 --
 
@@ -74,6 +101,16 @@ CREATE TABLE `Assignment_Prisoners` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `Assignment_Prisoners`
+--
+
+LOCK TABLES `Assignment_Prisoners` WRITE;
+/*!40000 ALTER TABLE `Assignment_Prisoners` DISABLE KEYS */;
+INSERT INTO `Assignment_Prisoners` VALUES (3,1),(3,3);
+/*!40000 ALTER TABLE `Assignment_Prisoners` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Crimes`
 --
 
@@ -88,6 +125,16 @@ CREATE TABLE `Crimes` (
   CONSTRAINT `Crimes_ibfk_2` FOREIGN KEY (`prisoner_id`) REFERENCES `Prisoners` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Crimes`
+--
+
+LOCK TABLES `Crimes` WRITE;
+/*!40000 ALTER TABLE `Crimes` DISABLE KEYS */;
+INSERT INTO `Crimes` VALUES (3,'arson'),(3,'murder');
+/*!40000 ALTER TABLE `Crimes` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `Emergency_Contacts`
@@ -109,6 +156,15 @@ CREATE TABLE `Emergency_Contacts` (
   CONSTRAINT `Emergency_Contacts_ibfk_2` FOREIGN KEY (`prisoner_id`) REFERENCES `Prisoners` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Emergency_Contacts`
+--
+
+LOCK TABLES `Emergency_Contacts` WRITE;
+/*!40000 ALTER TABLE `Emergency_Contacts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Emergency_Contacts` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `Guards`
@@ -133,6 +189,16 @@ CREATE TABLE `Guards` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `Guards`
+--
+
+LOCK TABLES `Guards` WRITE;
+/*!40000 ALTER TABLE `Guards` DISABLE KEYS */;
+INSERT INTO `Guards` VALUES (2,'NIGHT','Q',NULL);
+/*!40000 ALTER TABLE `Guards` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Incident_Guards`
 --
 
@@ -150,6 +216,15 @@ CREATE TABLE `Incident_Guards` (
   CONSTRAINT `Incident_Guards_ibfk_4` FOREIGN KEY (`guard_id`) REFERENCES `Guards` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Incident_Guards`
+--
+
+LOCK TABLES `Incident_Guards` WRITE;
+/*!40000 ALTER TABLE `Incident_Guards` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Incident_Guards` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `Incident_Prisoners`
@@ -171,6 +246,16 @@ CREATE TABLE `Incident_Prisoners` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `Incident_Prisoners`
+--
+
+LOCK TABLES `Incident_Prisoners` WRITE;
+/*!40000 ALTER TABLE `Incident_Prisoners` DISABLE KEYS */;
+INSERT INTO `Incident_Prisoners` VALUES (6,1),(6,3);
+/*!40000 ALTER TABLE `Incident_Prisoners` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Jobs`
 --
 
@@ -187,8 +272,18 @@ CREATE TABLE `Jobs` (
   KEY `supervisor_id` (`supervisor_id`),
   CONSTRAINT `Jobs_ibfk_1` FOREIGN KEY (`supervisor_id`) REFERENCES `Prison_Staff` (`id`),
   CONSTRAINT `Jobs_ibfk_2` FOREIGN KEY (`supervisor_id`) REFERENCES `Prison_Staff` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Jobs`
+--
+
+LOCK TABLES `Jobs` WRITE;
+/*!40000 ALTER TABLE `Jobs` DISABLE KEYS */;
+INSERT INTO `Jobs` VALUES (3,'fijg','23:55:00','23:45:00',NULL);
+/*!40000 ALTER TABLE `Jobs` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `Offence_Type`
@@ -207,6 +302,16 @@ CREATE TABLE `Offence_Type` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `Offence_Type`
+--
+
+LOCK TABLES `Offence_Type` WRITE;
+/*!40000 ALTER TABLE `Offence_Type` DISABLE KEYS */;
+INSERT INTO `Offence_Type` VALUES (6,'ATTEMPTED ESCAPE'),(6,'INSUBORDINATION');
+/*!40000 ALTER TABLE `Offence_Type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Offences`
 --
 
@@ -220,8 +325,18 @@ CREATE TABLE `Offences` (
   `location` varchar(255) NOT NULL,
   `severity` enum('LOW','MEDIUM','HIGH') NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Offences`
+--
+
+LOCK TABLES `Offences` WRITE;
+/*!40000 ALTER TABLE `Offences` DISABLE KEYS */;
+INSERT INTO `Offences` VALUES (6,'20 people escaped','2019-11-12 12:44:00','Hall','LOW');
+/*!40000 ALTER TABLE `Offences` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `Prison_Staff`
@@ -239,11 +354,21 @@ CREATE TABLE `Prison_Staff` (
   `sex` enum('M','F','OTHER') NOT NULL,
   `address` varchar(2047) DEFAULT NULL,
   `phone` char(10) DEFAULT NULL,
-  `post` varchar(255) NOT NULL,
+  `post` enum('WARDEN','ADMINISTRATIVE STAFF','PRISON OFFICER','PROBATION OFFICER','PSYCHOLOGIST','EDUCATION STAFF','HEALTHCARE STAFF','KITCHEN STAFF','HOUSEKEEPING STAFF','MAINTENANCE STAFF','GUARD') NOT NULL,
   `salary` float NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Prison_Staff`
+--
+
+LOCK TABLES `Prison_Staff` WRITE;
+/*!40000 ALTER TABLE `Prison_Staff` DISABLE KEYS */;
+INSERT INTO `Prison_Staff` VALUES (2,'Pranav','','Pramod',NULL,'M',NULL,NULL,'GUARD',20000);
+/*!40000 ALTER TABLE `Prison_Staff` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `Prisoners`
@@ -273,6 +398,16 @@ CREATE TABLE `Prisoners` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `Prisoners`
+--
+
+LOCK TABLES `Prisoners` WRITE;
+/*!40000 ALTER TABLE `Prisoners` DISABLE KEYS */;
+INSERT INTO `Prisoners` VALUES (1,'Shradha','','Sehgal','F','2001-10-21',40,5.5,'O+','','2019-11-11','20 Years without Payrole',20,'LOW','Q'),(3,'james','','','M','2000-11-11',22,132,'B-','ssaffs','2019-11-12','3 years',132,'LOW','A');
+/*!40000 ALTER TABLE `Prisoners` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Visitors`
 --
 
@@ -292,6 +427,16 @@ CREATE TABLE `Visitors` (
   CONSTRAINT `Visitors_ibfk_2` FOREIGN KEY (`prisoner_id`) REFERENCES `Prisoners` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Visitors`
+--
+
+LOCK TABLES `Visitors` WRITE;
+/*!40000 ALTER TABLE `Visitors` DISABLE KEYS */;
+INSERT INTO `Visitors` VALUES (1,'Jivitesh','','Jain','Friend','139 Bakul Nivas, IIIT Hyderabad','9711267621');
+/*!40000 ALTER TABLE `Visitors` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `Visits`
@@ -316,6 +461,16 @@ CREATE TABLE `Visits` (
   CONSTRAINT `Visits_ibfk_4` FOREIGN KEY (`guard_id`) REFERENCES `Guards` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Visits`
+--
+
+LOCK TABLES `Visits` WRITE;
+/*!40000 ALTER TABLE `Visits` DISABLE KEYS */;
+INSERT INTO `Visits` VALUES (1,'2019-11-12 13:04:00','Jivitesh','','Jain',NULL),(1,'2019-11-12 13:05:00','Jivitesh','','Jain',2),(1,'2019-11-12 13:07:00','Jivitesh','','jain',2);
+/*!40000 ALTER TABLE `Visits` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -326,4 +481,4 @@ CREATE TABLE `Visits` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-12  2:49:56
+-- Dump completed on 2019-11-12 17:31:44
