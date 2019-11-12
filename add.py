@@ -430,7 +430,7 @@ def add_job(cur, con):
 
     if attr['supervisor_id'] != 'NULL':
         try:
-            query_str = f'SELECT post FROM Prison.Prison_Staff WHERE supervisor_id = {attr["supervisor_id"]};'
+            query_str = f'SELECT post FROM Prison.Prison_Staff WHERE id = {attr["supervisor_id"]};'
             cur.execute(query_str)
             con.commit()
             result = cur.fetchall()
