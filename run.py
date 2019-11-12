@@ -1,7 +1,8 @@
 import subprocess as sp
 import pymysql
 import pymysql.cursors
-from views import * 
+from views import *
+from add import *
 
 tables = ["Prisoners", "Jobs", "Staff", "Offences", "Appeals", "Visits", "Go back"]
 
@@ -192,11 +193,11 @@ while(1):
                 
                 if ch == '5':
                     break
-                elif ch == 6:
+                elif ch == '6':
                     raise SystemExit
                 else:
                     dispatch(ch)
-                    input("Press any key to continue.")
+                    # input("Press any key to continue.")
 
 
     except Exception as e:

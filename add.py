@@ -48,6 +48,7 @@ def add_prisoner(cur, con):
         attr['last_name'] = ''
     else:
         print('Error: Please enter the prisoner\'s name')
+        input('Press any key to continue.')
         return
 
     attr['sex'] = input('Sex (M, F, OTHER)*: ')  # enum: checked by mysql
@@ -69,26 +70,31 @@ def add_prisoner(cur, con):
     attr['sentence'] = input('Sentence*: ')
     if attr['sentence'] == '':
         print('Please enter the sentence details')
+        input('Press any key to continue.')
         return
 
     attr['cell'] = input('Cell*: ')
     if not attr['cell'].isnumeric() or not len(attr['cell']) == 3:
         print('Please enter a cell number between 001 and 999')
+        input('Press any key to continue.')
         return
 
     attr['wing'] = input('Wing*: ')
     if len(attr['wing']) != 1 or not attr['wing'].isupper():
         print('Please enter a wing from A to Z')
+        input('Press any key to continue.')
         return
 
-    attr['security_level'] = input('Security level*: ')
+    attr['security_level'] = input('Security level out of LOW, MEDIUM or HIGH*: ')
     if attr['security_level'] not in ('LOW', 'MEDIUM', 'HIGH'):
         print('Please choose a security level out of LOW, MEDIUM or HIGH')
+        input('Press any key to continue.')
         return
 
     crimes = input('Crimes as a comma separated list*: ')
     if crimes == '':
         print('Please enter atleast one crime')
+        input('Press any key to continue.')
         return
     crimes = crimes.split(',')
     crimes = [x.strip() for x in crimes]
@@ -167,6 +173,7 @@ def add_visitor(cur, con):
         attr['last_name'] = ''
     else:
         print('Error: Please enter the visitor\'s name')
+        input('Press any key to continue.')
         return
 
     attr['relationship'] = empty_to_null(input('Relationship: '))
@@ -178,6 +185,7 @@ def add_visitor(cur, con):
         attr['phone'] = 'NULL'
     elif not len(attr['phone']) == 10 or not attr['phone'].isnumeric():
         print('Please enter a valid 10 digit phone number')
+        input('Press any key to continue.')
         return
 
     query_str = f'INSERT INTO Prison.Visitors VALUES(\
@@ -222,6 +230,7 @@ def add_emergency_contact(cur, con):
         attr['last_name'] = ''
     else:
         print('Error: Please enter the contact\'s name')
+        input('Press any key to continue.')
         return
 
     attr['relationship'] = empty_to_null(input('Relationship: '))
@@ -229,11 +238,13 @@ def add_emergency_contact(cur, con):
     attr['address'] = input('Address: ')
     if attr['address'] == '':
         print('Error: Please enter a valid adress')
+        input('Press any key to continue.')
         return
 
     attr['phone'] = input('Phone: ')
     if not len(attr['phone']) == 10 or not attr['phone'].isnumeric():
         print('Please enter a valid 10 digit phone number')
+        input('Press any key to continue.')
         return
 
     query_str = f'INSERT INTO Prison.Emergency_Contacts VALUES(\
@@ -268,7 +279,7 @@ def add_appeal(cur, con):
         attr['filing_date'] = datetime.now().strftime('%Y-%m-%d')
 
     attr['hearing_date'] = empty_to_null(
-        input('Hearing Date: '))  # can be null
+        input('Hearing Date as YYYY-MM-DD: '))  # can be null
 
     attr['status'] = input('Status:* ')  # enum and not null: checked by mysql
 
@@ -310,6 +321,7 @@ def add_prison_staff(cur, con):
         attr['last_name'] = ''
     else:
         print('Error: Please enter the prisoner\'s name')
+        input('Press any key to continue.')
         return
 
     attr['dob'] = empty_to_null(
@@ -322,8 +334,10 @@ def add_prison_staff(cur, con):
         attr['phone'] = 'NULL'
     elif not len(attr['phone']) == 10 or not attr['phone'].isnumeric():
         print('Please enter a valid 10 digit phone number')
+        input('Press any key to continue.')
         return
 
+    print('Recognised posts: WARDEN, ADMINISTRATIVE STAFF, PRISON OFFICER, PROBATION OFFICER, PSYCHOLOGIST, EDUCATION STAFF, HEALTHCARE STAFF, KITCHEN STAFF, HOUSEKEEPING STAFF, MAINTENANCE STAFF, GUARD')
     attr['post'] = input('Post*: ')  # non nullable enum: handled by mysql
     attr['salary'] = input('Salary*: ')  # non nullable float: handled by mysql
 
@@ -371,11 +385,12 @@ def add_prison_staff(cur, con):
 
     attr = {}
 
-    attr['shift'] = empty_to_null(input("Shift: "))
+    attr['shift'] = empty_to_null(input("Shift out of DAY or NIGHT: "))
     attr['wing'] = empty_to_null(input('Wing: '))
     if attr['wing'] != 'NULL':
         if len(attr['wing']) != 1 or not attr['wing'].isupper():
             print('Please enter a wing from A to Z')
+            input('Press any key to continue.')
             return
 
     attr['supervisor_id'] = empty_to_null(input('Supervisor\'s ID: '))
@@ -406,6 +421,7 @@ def add_job(cur, con):
     attr['job_name'] = input('Job name*: ')
     if attr['job_name'] == '':
         print('Error: Please enter a job name')
+        input('Press any key to continue.')
         return
 
     attr['working_hours_begin'] = empty_to_null(input('Start time: '))
@@ -424,6 +440,7 @@ def add_job(cur, con):
     prisoners = input('Prisoner ID\'s as a comma separated list*: ')
     if prisoners == '':
         print('Please enter atleast one prisoner')
+        input('Press any key to continue.')
         return
     prisoners = prisoners.split(',')
     prisoners = [x.strip() for x in prisoners]
@@ -443,8 +460,7 @@ def add_job(cur, con):
             return
 
         if len(result) == 0 or result[0]['post'] == 'GUARD':
-            print(
-                'Error: Please enter a valid supervisor ID, which does not belong to a guard.')
+            print('Error: Please enter a valid supervisor ID, which does not belong to a guard.')
             input('Press any key to continue.')
             return
 
@@ -516,6 +532,7 @@ def add_offence(cur, con):
     attr['description'] = input('Description*: ')
     if attr['description'] == '':
         print('Error: Please enter a desciption.')
+        input('Press any key to continue.')
         return
 
     attr['date_time'] = input(
@@ -526,6 +543,7 @@ def add_offence(cur, con):
     attr['location'] = input('Location*: ')
     if attr['location'] == '':
         print('Error: Please enter a valid location')
+        input('Press any key to continue.')
         return
 
     # non null enum, handled by database
@@ -535,6 +553,7 @@ def add_offence(cur, con):
     types = input('Offence types as a comma separated list*: ')
     if types == '':
         print('Error: Please enter atleast one offence type.')
+        input('Press any key to continue.')
         return
     types = types.split(',')
     types = [x.strip() for x in types]
@@ -551,6 +570,7 @@ def add_offence(cur, con):
     prisoners = input('Prisoner ID\'s as a comma separated list*: ')
     if prisoners == '':
         print('Please enter atleast one prisoner')
+        input('Press any key to continue.')
         return
     prisoners = prisoners.split(',')
     prisoners = [x.strip() for x in prisoners]
@@ -653,6 +673,7 @@ def add_visit(cur, con):
         attr['last_name'] = ''
     else:
         print('Error: Please enter the visitor\'s name')
+        input('Press any key to continue.')
         return
 
     attr['guard_id'] = empty_to_null(input('Guard ID: '))

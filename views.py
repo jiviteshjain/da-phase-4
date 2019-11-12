@@ -15,7 +15,7 @@ def print_query(query, con, cur):
             print(tabulate(rows, header, tablefmt = 'grid'))
         
         else:
-            print("Empty!")
+            print("Not found!")
 
     except Exception as e:
         print("Error!")
@@ -59,8 +59,12 @@ def view_offence(cur, con):
         ch = input("Enter choice> ")
         if (ch == '1'):
             print("Format for DateTime: YYYY-MM-DD hh:mm:ss")
-            d1 = input("Enter DateTime_begin: ")
-            d2 = input("Enter DateTime_end: ")
+            d1 = input("Enter Start Time: ")
+            d2 = input("Enter End Time: ")
+            if d1 == '' or d2 == '':
+                print("Enter valid date!")
+                break
+
             query = "select A.id, A.type, A.description, A.date_time, A.location, A.severity, B.prisoner_id, C.guard_id from (select * from Offences, Offence_Type where Offences.id = Offence_Type.offence_id) A left outer join Incident_Prisoners B on A.id = B.offence_id left outer join Incident_Guards C on A.id = C.offence_id where A.date_time between '" + d1 +"' and '" + d2 +"';"
             print_query(query, con, cur)
             break
@@ -90,9 +94,12 @@ def view_visits(cur, con):
         ch = int(input("Enter choice> "))
         if (ch == 1):
             print("Format for DateTime: YYYY-MM-DD hh:mm:ss")
-            d1 = input("Enter DateTime_begin: ")
-            d2 = input("Enter DateTime_end: ")
-            print(d1)
+            d1 = input("Enter Start time: ")
+            d2 = input("Enter End time: ")
+            if d1 == '' or d2 == '':
+                print("Enter valid date!")
+                break
+
             query = "select * from Visits where date_time BETWEEN '" + d1 + "' and '"+ d2 +"';"
             print_query(query, con, cur)
             break
@@ -111,7 +118,7 @@ def view_visits(cur, con):
 
 def view_prisoner(cur, con):
 
-    query = "select id as 'Prisoner ID', concat(first_name, middle_name, last_name) as 'Name' from Prisoners;"
+    query = "select id as 'Prisoner ID', concat(first_name, ' ', middle_name, ' ',last_name) as 'Name' from Prisoners;"
     print_query(query, con, cur)
 
     print("1. View Prisoner report")
@@ -121,8 +128,9 @@ def view_prisoner(cur, con):
         ch = input("Enter choice> ")
         if (ch == '1'):
             p_id = input("Enter Prisoner ID: ")
-            titles = ["Prisoner Details", "Visitors", "Emergency Contacts", "Visits involving the prisoner", "Appeals made by the prisoner", "Jobs the prisoner works","Crimes committed", "Offences prisoner committed", "Volatility Level"]
-            queries = ["select * from Prisoners where id = ", "select * from Visitors where prisoner_id = ", "select * from Emergency_Contacts where prisoner_id = ", "select * from Visits where prisoner_id = ", "select * from Appeals where prisoner_id = ", "select A.job_name from Jobs A, Assignment_Prisoners B where B.job_id = A.id and B.prisoner_id = ", "select crime from Crimes where prisoner_id = ", "select * from Offences A, Incident_Prisoners B where A.id = B.offence_id and B.prisoner_id = ", "select count(*) as 'Volatility Level' from Incident_Prisoners where prisoner_id = "]
+            titles = ["Prisoner Details",  "Crimes committed","Visitors", "Emergency Contacts", "Visits involving the prisoner", "Appeals made by the prisoner", "Jobs the prisoner works", "Offences prisoner committed", "Volatility Level"]
+            queries = ["select * from Prisoners where id = ", "select crime from Crimes where prisoner_id = ","select * from Visitors where prisoner_id = ", "select * from Emergency_Contacts where prisoner_id = ", "select * from Visits where prisoner_id = ", "select * from Appeals where prisoner_id = ",
+                       "select A.job_name from Jobs A, Assignment_Prisoners B where B.job_id = A.id and B.prisoner_id = ", "select A.* from Offences A, Incident_Prisoners B where A.id = B.offence_id and B.prisoner_id = ", "select count(*) as 'Volatility Level' from Incident_Prisoners where prisoner_id = "]
             i = 0
             while i < len(queries):
                 print("\n"+titles[i])
@@ -199,6 +207,12 @@ def view_staff(cur, con):
                 print("\nOffences that occured during the guard's presence: ")
                 query = "select A.offence_id, B.description from Incident_Guards A, Offences B where A.offence_id = B.id and A.guard_id = " + s_id + ";"
                 print_query(query, con, cur)
+                print("\nVisits under the guard: ")
+                query = f"select * from Visits where guard_id = {s_id};" 
+                print_query(query, con, cur)
+
+                
+
             
             else:
                 print("\nJobs the staff oversees: ")
